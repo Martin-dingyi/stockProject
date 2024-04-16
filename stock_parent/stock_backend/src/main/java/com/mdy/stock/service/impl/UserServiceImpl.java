@@ -1,16 +1,25 @@
 package com.mdy.stock.service.impl;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.CircleCaptcha;
+import cn.hutool.captcha.LineCaptcha;
 import com.mdy.stock.mapper.SysUserMapper;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
+import com.mdy.stock.utils.IdWorker;
 import com.mdy.stock.viewObject.request.ReqLoginVo;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 import com.mdy.stock.viewObject.response.ResponseCode;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.mdy.stock.viewObject.response.ResponseCode.DATA_ERROR;
 
@@ -22,6 +31,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private IdWorker idWorker;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public SysUser getInfoByUsername(String name) {
@@ -46,5 +61,26 @@ public class UserServiceImpl implements UserService {
             return R.ok(respLoginVo);
         }
         return R.error(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+    }
+
+    /**
+     * 生成图形验证码和id，将id和验证码存入redis
+     * @return 返回图片的base64格式数据和sessionId
+     */
+    @Override
+    public R<Map> getCaptchaCode() {
+        // 1.生成图形
+        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(250, 40, 4, 5);
+        // 2.生成四位验证码
+        String captchaCode = lineCaptcha.getCode();
+        // 3.生成唯一ID
+        String sessionId = String.valueOf(idWorker.nextId());
+        // 4.将id和验证码存入redis
+        redisTemplate.opsForValue().set(sessionId, captchaCode, 1, TimeUnit.MINUTES);
+        // 5.将图形转换为base64格式数据，并把图形和验证码封装进map
+        HashMap<String, String> data = new HashMap<>();
+        data.put("imageData", lineCaptcha.getImageBase64());
+        data.put("sessionId", sessionId);
+        return R.ok(data);
     }
 }

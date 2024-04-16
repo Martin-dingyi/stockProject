@@ -7,6 +7,8 @@ import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
+
 /**
  * @author mdy
  * @date 2024-04-16 9:40
@@ -17,4 +19,6 @@ public interface UserService {
     SysUser getInfoByUsername(String name);
 
     R<RespLoginVo> login(ReqLoginVo reqLoginVo);
+
+    R<Map> getCaptchaCode();
 }

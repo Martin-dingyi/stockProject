@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @author mdy
  * @date 2024-04-16 9:40
@@ -43,11 +45,8 @@ public class userController {
 
     }
 
-    // 设置当前请求方法为DELETE，表示REST风格中的删除操作
-    @DeleteMapping(value = "/users/{id}/{name}")
-    public String delete(@PathVariable Integer id, @PathVariable("name") String username) {
-        System.out.println("user id:" + id);
-        System.out.println("username:" + username);
-        return "{'module':'user delete'}";
+    @GetMapping("/captcha")
+    private R<Map> getCaptchaCode() {
+        return userService.getCaptchaCode();
     }
 }
