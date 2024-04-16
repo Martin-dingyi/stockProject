@@ -3,7 +3,7 @@ package com.mdy.stock.viewObject.response;
 /**
  * @author others
  * @Date 2021/12/21
- * @Description 响应请求的可能情况编码。
+ * @Description 响应的状态码。
  */
 public enum ResponseCode{
     ERROR(0,"操作失败"),
