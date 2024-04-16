@@ -1,5 +1,6 @@
 package com.mdy.stock;
 
+import com.mdy.stock.utils.IdWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,9 @@ public class TestSomething {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    IdWorker idWorker;
+
     @Test
     public void testEncoding() {
         String password = "123456";
@@ -24,5 +28,10 @@ public class TestSomething {
     @Test
     public void testRedis() {
         System.out.println(redisTemplate.opsForValue().get("mdy"));
+    }
+
+    @Test
+    public void testSnowFlake() {
+        System.out.println(idWorker.nextId());
     }
 }
