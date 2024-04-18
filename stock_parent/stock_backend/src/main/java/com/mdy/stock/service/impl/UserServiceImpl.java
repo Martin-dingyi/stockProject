@@ -43,19 +43,31 @@ public class UserServiceImpl implements UserService {
         return sysUserMapper.findUserByUserName(name);
     }
 
+    /**
+     * 登录功能
+     * @param reqLoginVo 请求信息包含用户名、密码和验证码
+     * @return
+     */
     @Override
     public R<RespLoginVo> login(ReqLoginVo reqLoginVo) {
-        if (reqLoginVo == null || reqLoginVo.getUsername() == null || reqLoginVo.getPassword() == null || reqLoginVo.getCode() == null) {
+        if (reqLoginVo == null || reqLoginVo.getUsername() == null
+                || reqLoginVo.getPassword() == null
+                || reqLoginVo.getCode() == null
+                || reqLoginVo.getSessionId() == null) {
             return R.error(ResponseCode.DATA_ERROR);
         }
-        // 通过用户名查找用户信息
+        // 1.通过用户名查找用户信息
         SysUser sysUser = sysUserMapper.findUserByUserName(reqLoginVo.getUsername());
         if (sysUser == null) {
             return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
         }
         RespLoginVo respLoginVo = new RespLoginVo();
-        // 将输入的密码和数据库中的用户信息中的加密密码比对
-        // 1.如果相同，返回用户信息；2.如果不同，返回错误信息
+        // 2.获取redis中存储的对应验证码，如果不存在或不一致则返回错误信息
+        String redisCode = redisTemplate.opsForValue().get(reqLoginVo.getSessionId());
+        if (redisCode == null || !redisCode.equals(reqLoginVo.getCode())) {
+            return R.error(ResponseCode.CHECK_CODE_ERROR);
+        }
+        // 3.将输入的密码和数据库中的用户信息中的加密密码比对
         if (passwordEncoder.matches(reqLoginVo.getPassword(), sysUser.getPassword())) {
             BeanUtils.copyProperties(sysUser, respLoginVo);
             return R.ok(respLoginVo);

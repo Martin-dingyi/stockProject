@@ -22,4 +22,9 @@ public class ReqLoginVo {
      * 验证码
      * */
     private String code;
+
+    /**
+     * 随机码sessionId
+     */
+    private String sessionId;
 }
