@@ -11,6 +11,7 @@ import com.mdy.stock.viewObject.request.ReqLoginVo;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 import com.mdy.stock.viewObject.response.ResponseCode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -50,29 +51,29 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public R<RespLoginVo> login(ReqLoginVo reqLoginVo) {
-        if (reqLoginVo == null || reqLoginVo.getUsername() == null
-                || reqLoginVo.getPassword() == null
-                || reqLoginVo.getCode() == null
-                || reqLoginVo.getSessionId() == null) {
+        if (reqLoginVo == null || StringUtils.isBlank(reqLoginVo.getUsername())
+                || StringUtils.isBlank(reqLoginVo.getPassword())
+                || StringUtils.isBlank(reqLoginVo.getCode())
+                || StringUtils.isBlank(reqLoginVo.getSessionId())) {
             return R.error(ResponseCode.DATA_ERROR);
         }
-        // 1.通过用户名查找用户信息
+        RespLoginVo respLoginVo = new RespLoginVo();
+        // 获取redis中存储的对应验证码，如果不存在或不一致则返回错误信息
+        String redisCode = redisTemplate.opsForValue().get(reqLoginVo.getSessionId());
+        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(reqLoginVo.getCode())) {
+            return R.error(ResponseCode.CHECK_CODE_ERROR);
+        }
+        // 通过用户名查找用户信息
         SysUser sysUser = sysUserMapper.findUserByUserName(reqLoginVo.getUsername());
         if (sysUser == null) {
             return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
         }
-        RespLoginVo respLoginVo = new RespLoginVo();
-        // 2.获取redis中存储的对应验证码，如果不存在或不一致则返回错误信息
-        String redisCode = redisTemplate.opsForValue().get(reqLoginVo.getSessionId());
-        if (redisCode == null || !redisCode.equals(reqLoginVo.getCode())) {
-            return R.error(ResponseCode.CHECK_CODE_ERROR);
+        // 将输入的密码和数据库中的用户信息中的加密密码比对
+        if (!passwordEncoder.matches(reqLoginVo.getPassword(), sysUser.getPassword())) {
+            return R.error(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
-        // 3.将输入的密码和数据库中的用户信息中的加密密码比对
-        if (passwordEncoder.matches(reqLoginVo.getPassword(), sysUser.getPassword())) {
-            BeanUtils.copyProperties(sysUser, respLoginVo);
-            return R.ok(respLoginVo);
-        }
-        return R.error(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
+        BeanUtils.copyProperties(sysUser, respLoginVo);
+        return R.ok(respLoginVo);
     }
 
     /**

@@ -10,3 +10,4 @@ spring:
           max-idle: 8 # 连接池中的最大空闲连接
           min-idle: 1  # 连接池中的最小空闲连接
     timeout: PT10S # 连接超时时间
+    password: root
