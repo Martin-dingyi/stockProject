@@ -1,5 +1,6 @@
 package com.mdy.stock;
 
+import com.mdy.stock.pojo.vo.StockInfoConfig;
 import com.mdy.stock.utils.IdWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Arrays;
 
 @SpringBootTest
 public class TestSomething {
@@ -18,6 +21,9 @@ public class TestSomething {
 
     @Autowired
     IdWorker idWorker;
+
+    @Autowired
+    StockInfoConfig stockInfoConfig;
 
     @Test
     public void testEncoding() {
@@ -33,5 +39,10 @@ public class TestSomething {
     @Test
     public void testSnowFlake() {
         System.out.println(idWorker.nextId());
+    }
+
+    @Test
+    public void testConfigProperties() {
+        System.out.println(Arrays.toString(stockInfoConfig.getInner().toArray()));
     }
 }
