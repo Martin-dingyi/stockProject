@@ -10,19 +10,18 @@ import lombok.Data;
 
 @Data
 public class ReqLoginVo {
-    /*
-    * 用户名
-    * */
+    /**
+     * 用戶名
+     */
     private String username;
-    /*
+    /**
      * 密码
-     * */
+     */
     private String password;
-    /*
+    /**
      * 验证码
-     * */
+     */
     private String code;
-
     /**
      * 随机码sessionId
      */

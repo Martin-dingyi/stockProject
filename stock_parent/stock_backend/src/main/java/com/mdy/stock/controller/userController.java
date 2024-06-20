@@ -28,6 +28,11 @@ public class userController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    /**
+     * 单例测试
+     * @param name 用户名
+     * @return 用户数据
+     */
     @GetMapping("/user/{username}")
     private SysUser getUserByName(@PathVariable("username") String name) {
         System.out.println(passwordEncoder.encode(name));
@@ -36,8 +41,8 @@ public class userController {
 
     /**
      * 用户登录功能
-     * @param reqLoginVo
-     * @return
+     * @param reqLoginVo 封装的请求对象
+     * @return 登录信息
      */
     @PostMapping("/login")
     private R<RespLoginVo> login(@RequestBody ReqLoginVo reqLoginVo) {
@@ -45,6 +50,10 @@ public class userController {
 
     }
 
+    /**
+     * 生成验证码
+     * @return 验证码
+     */
     @GetMapping("/captcha")
     private R<Map> getCaptchaCode() {
         return userService.getCaptchaCode();
