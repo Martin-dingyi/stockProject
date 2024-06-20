@@ -1,8 +1,8 @@
 package com.mdy.stock.service;
 
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
+import com.mdy.stock.pojo.domain.InnerSectorDomain;
 import com.mdy.stock.viewObject.response.R;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,8 +14,11 @@ import java.util.List;
 public interface StockService {
 
     /**
-     * 获取所有国内大盘数据
+     * 获取所有国内大盘指数数据
      * @return
      */
-    R<List<InnerMarketDomain>> getInnerMarketData();
+    R<List<InnerMarketDomain>> getInnerIndexAll();
+
+
+    R<List<InnerSectorDomain>> getInnerSectorAll();
 }

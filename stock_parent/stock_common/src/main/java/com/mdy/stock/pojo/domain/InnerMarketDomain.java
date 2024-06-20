@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * @author mdy
  * @date 2024-06-12 14:12
- * @description 国内A股大盘信息实体类
+ * @description 国内A股大盘指数信息实体类
  */
 
 @Data

@@ -1,8 +1,8 @@
 package com.mdy.stock.mapper;
 
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
+import com.mdy.stock.pojo.domain.InnerSectorDomain;
 import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -35,4 +35,5 @@ public interface StockMarketIndexInfoMapper {
 
     int updateByPrimaryKey(StockMarketIndexInfo record);
 
+    List<InnerSectorDomain> getInnerMarketSectorInfo(@Param("cur_time") Date lastTime);
 }

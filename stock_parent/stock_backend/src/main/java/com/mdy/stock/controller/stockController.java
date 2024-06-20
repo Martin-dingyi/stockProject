@@ -1,5 +1,6 @@
 package com.mdy.stock.controller;
 
+import com.mdy.stock.pojo.domain.InnerSectorDomain;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.viewObject.response.R;
@@ -29,6 +30,15 @@ public class stockController {
      */
     @GetMapping("/index/all")
     public R<List<InnerMarketDomain>> getInnerMarketData() {
-        return stockService.getInnerMarketData();
+        return stockService.getInnerIndexAll();
+    }
+
+    /**
+     * 获取十条国内板块信息
+     * @return
+     */
+    @GetMapping("/sector/all")
+    public R<List<InnerSectorDomain>> getSectorData() {
+        return stockService.getInnerSectorAll();
     }
 }
