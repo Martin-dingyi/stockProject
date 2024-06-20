@@ -1,11 +1,10 @@
 package com.mdy.stock;
 
-import com.mdy.stock.pojo.vo.StockInfoConfig;
+import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.utils.IdWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

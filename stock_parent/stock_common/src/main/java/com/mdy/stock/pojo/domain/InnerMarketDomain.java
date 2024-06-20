@@ -1,4 +1,4 @@
-package com.mdy.stock.viewObject.domain;
+package com.mdy.stock.pojo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

@@ -1,6 +1,5 @@
 package com.mdy.stock.config;
 
-import com.mdy.stock.pojo.vo.StockInfoConfig;
 import com.mdy.stock.utils.IdWorker;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 
 @Configuration
-@EnableConfigurationProperties({StockInfoConfig.class})  // 开启某个特定属性配置类实例化的方法之一
+@EnableConfigurationProperties({com.mdy.stock.pojo.valueObject.StockInfoConfig.class})  // 开启某个特定属性配置类实例化的方法之一
 public class CommonConfig {
 
     /**

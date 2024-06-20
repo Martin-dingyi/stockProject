@@ -1,6 +1,12 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author martin
@@ -9,6 +15,13 @@ import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
 * @Entity com.mdy.stock.pojo.entity.StockMarketIndexInfo
 */
 public interface StockMarketIndexInfoMapper {
+    /**
+     * 根据最近交易时间和国内大盘编码查询所有国内大盘数据
+     * @param lastTime
+     * @param innerMarketCodes
+     * @return
+     */
+    List<InnerMarketDomain> getInnerMarketInfo(@Param("cur_time") Date lastTime, @Param("marketCodes") List<String> innerMarketCodes);
 
     int deleteByPrimaryKey(Long id);
 

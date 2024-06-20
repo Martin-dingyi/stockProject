@@ -32,7 +32,30 @@
         where  id = #{id,jdbcType=BIGINT} 
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+<!--  查询国内大盘数据-->
+  <select id="getInnerMarketInfo" resultType="com.mdy.stock.pojo.domain.InnerMarketDomain">
+    SELECT
+      smi.market_code AS code,
+      smi.market_name AS name,
+      smi.open_point AS openPoint,
+      smi.cur_point AS curPoint,
+      smi.pre_close_point AS preClosePoint,
+      smi.trade_amount AS tradeAmt,
+      smi.trade_volume AS tradeVol,
+      smi.cur_point-smi.pre_close_point AS upDown,
+      (smi.cur_point-smi.pre_close_point)/smi.pre_close_point AS rose,
+      (smi.max_point-smi.min_point)/smi.pre_close_point AS amplitude,
+      smi.cur_time AS curTime
+    FROM stock_market_index_info AS smi
+    WHERE smi.market_code IN
+    <foreach collection="marketCodes" item="code" open="(" separator="," close=")">
+      #{code}
+    </foreach>
+    and smi.cur_time=#{cur_time}
+    ORDER BY smi.cur_time DESC LIMIT 2;
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_market_index_info
         where  id = #{id,jdbcType=BIGINT} 
     </delete>

@@ -1,4 +1,4 @@
-package com.mdy.stock.pojo.vo;
+package com.mdy.stock.pojo.valueObject;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,8 +14,10 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = "stock")
 public class StockInfoConfig {
+
     // A股大盘id信息
     private List<String> inner;
+
     // 外盘id信息
     private List<String> outer;
 }
