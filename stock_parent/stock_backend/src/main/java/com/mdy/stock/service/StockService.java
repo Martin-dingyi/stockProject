@@ -2,6 +2,8 @@ package com.mdy.stock.service;
 
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.StockUpdownDomain;
+import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 
 import java.util.List;
@@ -21,4 +23,12 @@ public interface StockService {
 
 
     R<List<InnerSectorDomain>> getInnerSectorAll();
+
+    /**
+     * 根据分页数据获取涨幅榜信息，查询最新的数据。
+     * @param page 当前页
+     * @param pageSize 页大小
+     * @return
+     */
+    R<PageResult<StockUpdownDomain>> getStockUpDownDomain(Integer page, Integer pageSize);
 }

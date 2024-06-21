@@ -1,6 +1,11 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.entity.StockRtInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author martin
@@ -22,4 +27,5 @@ public interface StockRtInfoMapper {
 
     int updateByPrimaryKey(StockRtInfo record);
 
+    List<StockUpdownDomain> findAll(@Param("curTime") Date lastTime);
 }

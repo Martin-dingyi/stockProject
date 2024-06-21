@@ -1,17 +1,23 @@
 package com.mdy.stock.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
+import com.mdy.stock.mapper.StockRtInfoMapper;
 import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.utils.DateTimeUtil;
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
+import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.ResponseCode;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -28,6 +34,8 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
+    @Autowired
+    private StockRtInfoMapper stockRtInfoMapper;
 
     /**
      * 获取最近交易时间，从配置文件中获取所有国内大盘id，根据这两个数据查询国内大盘信息
@@ -60,11 +68,31 @@ public class StockServiceImpl implements StockService {
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2021-12-21 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.根据最新交易时间查询十条数据
-        List<InnerSectorDomain> infos = stockMarketIndexInfoMapper.getInnerMarketSectorInfo(lastTime);
+        List<InnerSectorDomain> innerMarketSectorInfos = stockMarketIndexInfoMapper.getInnerMarketSectorInfo(lastTime);
         // 3.若无数据，则报错
-        if (infos == null || infos.isEmpty()) {
-            return R.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+        if (CollectionUtils.isEmpty(innerMarketSectorInfos)) {
+            return R.error(ResponseCode.NO_RESPONSE_DATA);
         }
-        return R.ok(infos);
+        return R.ok(innerMarketSectorInfos);
+    }
+
+    @Override
+    public R<PageResult<StockUpdownDomain>> getStockUpDownDomain(Integer page, Integer pageSize) {
+        // 1.设置pageHelper分页参数
+        PageHelper.startPage(page, pageSize);
+        // 2.根据最新交易时间查询涨幅榜数据
+        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+
+        // ！！！！mock数据，暂时使用，后期删除。
+        // DateTime.parse作用：将字符串转化为DateTime类型
+        lastTime = DateTime.parse("2022-06-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findAll(lastTime);
+        if (CollectionUtils.isEmpty(stockUpDownInfos)) {
+            return R.error(ResponseCode.NO_RESPONSE_DATA);
+        }
+        // 3.将数据加载到pageInfo中，再通过pageInfo生成pageResult
+        PageInfo<StockUpdownDomain> pageInfo = new PageInfo<>(stockUpDownInfos);
+        PageResult<StockUpdownDomain> pageResult = new PageResult<>(pageInfo);
+        return R.ok(pageResult);
     }
 }

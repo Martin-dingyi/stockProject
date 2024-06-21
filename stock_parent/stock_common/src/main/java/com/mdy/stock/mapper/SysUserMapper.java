@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
 * @author martin
 * @description 针对表【sys_user(用户表)】的数据库操作Mapper
@@ -27,5 +29,7 @@ public interface SysUserMapper {
     int updateByPrimaryKey(SysUser record);
 
     SysUser findUserByUserName(@Param("userName") String name);
+
+    List<SysUser> findAll();
 
 }
