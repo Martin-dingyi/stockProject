@@ -1,5 +1,6 @@
 package com.mdy.stock.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -131,4 +135,28 @@ public class StockServiceImpl implements StockService {
         stockUpDownCount.put("downList", downDataList);
         return R.ok(stockUpDownCount);
     }
+
+    /**
+     * 根据当前页下载股票涨跌数据
+     * @param page 当前页
+     * @param pageSize 页大小
+     * @param response servlet的http响应对象
+     */
+    @Override
+    public void downloadStockUpDown(Integer page, Integer pageSize, HttpServletResponse response) {
+        List<StockUpdownDomain> stockUpDownInfos = this.getStockUpDownPageInfos(page, pageSize).getData().getRows();
+        // 设置响应的文件格式和编码格式
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        try {
+            // 设置下载的默认的文件名
+            String fileName = URLEncoder.encode("股票涨跌数据", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            EasyExcel.write(response.getOutputStream(), StockUpdownDomain.class).sheet("股票涨跌信息").doWrite(stockUpDownInfos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

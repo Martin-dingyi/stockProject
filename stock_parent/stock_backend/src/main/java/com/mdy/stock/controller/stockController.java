@@ -7,11 +7,13 @@ import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +76,20 @@ public class stockController {
     @GetMapping("/stock/updown/count")
     public R<Map> getStockUpDownCount() {
         return stockService.getStockUpDownCount();
+    }
+
+    /**
+     * 根据当前页下载股票涨跌数据
+     * @param page 当前页
+     * @param pageSize 页大小
+     * @param response servlet的http响应对象
+     */
+    @GetMapping("/stock/export")
+    public void downloadStockUpDown(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "20") Integer pageSize,
+            HttpServletResponse response) {
+        stockService.downloadStockUpDown(page, pageSize, response);
     }
 
 }

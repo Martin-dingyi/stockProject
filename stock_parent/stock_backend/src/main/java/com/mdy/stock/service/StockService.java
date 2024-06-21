@@ -6,6 +6,7 @@ import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +46,6 @@ public interface StockService {
     R<List<StockUpdownDomain>> getUpDownIncreaseInfo();
 
     R<Map> getStockUpDownCount();
+
+    void downloadStockUpDown(Integer page, Integer pageSize, HttpServletResponse response);
 }
