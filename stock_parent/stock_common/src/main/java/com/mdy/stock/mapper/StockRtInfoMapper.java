@@ -2,10 +2,12 @@ package com.mdy.stock.mapper;
 
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.entity.StockRtInfo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author martin
@@ -39,5 +41,16 @@ public interface StockRtInfoMapper {
      * @param lastTime 最近交易时间
      * @return
      */
-    List<StockUpdownDomain> findFourData(@Param("curTime") Date lastTime);
+    List<StockUpdownDomain> findFourUpDownData(@Param("curTime") Date lastTime);
+
+    /**
+     * 查询涨跌停股票的时间和数量
+     * @param openTime 最近交易时间对应的开盘时间
+     * @param lastTime 最近交易时间
+     * @param flag 标志，代表是查询涨停还是跌停的数据
+     * @return
+     */
+    List<Map> findUpDownCount(@Param("openTime") Date openTime,
+                              @Param("endTime") Date lastTime, @Param("flag") int flag);
+    
 }

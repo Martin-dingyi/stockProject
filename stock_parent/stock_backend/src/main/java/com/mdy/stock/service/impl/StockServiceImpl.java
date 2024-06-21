@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mdy
@@ -105,10 +107,28 @@ public class StockServiceImpl implements StockService {
         // ！！！！mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-06-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findFourData(lastTime);
+        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findFourUpDownData(lastTime);
         if (CollectionUtils.isEmpty(stockUpDownInfos)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA);
         }
         return R.ok(stockUpDownInfos);
+    }
+
+    @Override
+    public R<Map> getStockUpDownCount() {
+        // 1.获取最近交易时间
+        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        // ！！！！mock数据，暂时使用，后期删除。
+        lastTime = DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2.获取最近交易时间下的开盘时间
+        Date openTime = DateTimeUtil.getOpenDate(DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"))).toDate();
+        // 3.查询该时间段内涨跌停的数据
+        List<Map> upDataList = stockRtInfoMapper.findUpDownCount(openTime, lastTime, 1);
+        List<Map> downDataList = stockRtInfoMapper.findUpDownCount(openTime, lastTime, 0);
+        // 4.制作返回数据
+        Map<String, List<Map>> stockUpDownCount = new HashMap<>();
+        stockUpDownCount.put("upList", upDataList);
+        stockUpDownCount.put("downList", downDataList);
+        return R.ok(stockUpDownCount);
     }
 }

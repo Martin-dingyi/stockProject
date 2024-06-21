@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mdy
@@ -61,10 +62,18 @@ public class stockController {
      * 返回涨幅榜前四条数据，根据涨幅排列。
      * @return
      */
-    @GetMapping("stock/increase")
+    @GetMapping("/stock/increase")
     public R<List<StockUpdownDomain>> getStockIncrease() {
         return stockService.getUpDownIncreaseInfo();
     }
 
+    /**
+     * 返回最近交易时间内涨停和跌停的股票的数据，包括他们涨停或跌停的时间，以及涨跌停股票的数量
+     * @return
+     */
+    @GetMapping("/stock/updown/count")
+    public R<Map> getStockUpDownCount() {
+        return stockService.getStockUpDownCount();
+    }
 
 }

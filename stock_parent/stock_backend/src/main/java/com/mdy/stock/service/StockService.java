@@ -7,6 +7,7 @@ import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mdy
@@ -42,4 +43,6 @@ public interface StockService {
      */
 
     R<List<StockUpdownDomain>> getUpDownIncreaseInfo();
+
+    R<Map> getStockUpDownCount();
 }
