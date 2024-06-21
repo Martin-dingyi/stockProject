@@ -54,6 +54,17 @@ public class stockController {
     @GetMapping("/stock/all")
     public R<PageResult<StockUpdownDomain>> getStockPageInfo(@RequestParam(name = "page", required = false,
             defaultValue = "1") Integer page, @RequestParam(name = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
-        return stockService.getStockUpDownDomain(page, pageSize);
+        return stockService.getStockUpDownPageInfos(page, pageSize);
     }
+
+    /**
+     * 返回涨幅榜前四条数据，根据涨幅排列。
+     * @return
+     */
+    @GetMapping("stock/increase")
+    public R<List<StockUpdownDomain>> getStockIncrease() {
+        return stockService.getUpDownIncreaseInfo();
+    }
+
+
 }

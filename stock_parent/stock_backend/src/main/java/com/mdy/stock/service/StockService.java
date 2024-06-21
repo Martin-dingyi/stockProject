@@ -22,6 +22,10 @@ public interface StockService {
     R<List<InnerMarketDomain>> getInnerIndexAll();
 
 
+    /**
+     * 获取所有国内板块数据
+     * @return
+     */
     R<List<InnerSectorDomain>> getInnerSectorAll();
 
     /**
@@ -30,5 +34,12 @@ public interface StockService {
      * @param pageSize 页大小
      * @return
      */
-    R<PageResult<StockUpdownDomain>> getStockUpDownDomain(Integer page, Integer pageSize);
+    R<PageResult<StockUpdownDomain>> getStockUpDownPageInfos(Integer page, Integer pageSize);
+
+    /**
+     * 获取最新的前四条涨幅榜数据，根据涨幅排序
+     * @return
+     */
+
+    R<List<StockUpdownDomain>> getUpDownIncreaseInfo();
 }

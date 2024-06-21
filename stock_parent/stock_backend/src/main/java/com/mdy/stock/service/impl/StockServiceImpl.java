@@ -34,6 +34,7 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
+
     @Autowired
     private StockRtInfoMapper stockRtInfoMapper;
 
@@ -77,7 +78,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public R<PageResult<StockUpdownDomain>> getStockUpDownDomain(Integer page, Integer pageSize) {
+    public R<PageResult<StockUpdownDomain>> getStockUpDownPageInfos(Integer page, Integer pageSize) {
         // 1.设置pageHelper分页参数
         PageHelper.startPage(page, pageSize);
         // 2.根据最新交易时间查询涨幅榜数据
@@ -94,5 +95,20 @@ public class StockServiceImpl implements StockService {
         PageInfo<StockUpdownDomain> pageInfo = new PageInfo<>(stockUpDownInfos);
         PageResult<StockUpdownDomain> pageResult = new PageResult<>(pageInfo);
         return R.ok(pageResult);
+    }
+
+    @Override
+    public R<List<StockUpdownDomain>> getUpDownIncreaseInfo() {
+        // 1.获取最近交易时间
+        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+
+        // ！！！！mock数据，暂时使用，后期删除。
+        // DateTime.parse作用：将字符串转化为DateTime类型
+        lastTime = DateTime.parse("2022-06-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findFourData(lastTime);
+        if (CollectionUtils.isEmpty(stockUpDownInfos)) {
+            return R.error(ResponseCode.NO_RESPONSE_DATA);
+        }
+        return R.ok(stockUpDownInfos);
     }
 }

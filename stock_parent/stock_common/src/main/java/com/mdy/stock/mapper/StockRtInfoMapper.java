@@ -27,5 +27,17 @@ public interface StockRtInfoMapper {
 
     int updateByPrimaryKey(StockRtInfo record);
 
+    /**
+     * 查询所有涨幅榜数据
+     * @param lastTime 最近交易时间
+     * @return
+     */
     List<StockUpdownDomain> findAll(@Param("curTime") Date lastTime);
+
+    /**
+     * 查询涨幅榜前四条数据，根据涨幅排序
+     * @param lastTime 最近交易时间
+     * @return
+     */
+    List<StockUpdownDomain> findFourData(@Param("curTime") Date lastTime);
 }
