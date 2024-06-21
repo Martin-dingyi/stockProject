@@ -50,6 +50,7 @@ public interface StockRtInfoMapper {
      * @param flag 标志，代表是查询涨停还是跌停的数据
      * @return
      */
+    @MapKey("time")
     List<Map> findUpDownCount(@Param("openTime") Date openTime,
                               @Param("endTime") Date lastTime, @Param("flag") int flag);
     
