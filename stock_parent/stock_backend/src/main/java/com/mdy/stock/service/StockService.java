@@ -62,4 +62,10 @@ public interface StockService {
      * @return
      */
     R<Map> getStockTradeAmountForTodayAndYesterday();
+
+    /**
+     * 获取涨跌区间计数
+     * @return R
+     */
+    R<Map<String, Object>> getStockUpDownIntervalCnt();
 }

@@ -20,4 +20,7 @@ public class StockInfoConfig {
 
     // 外盘id信息
     private List<String> outer;
+
+    // 固定涨跌区别列表
+    private List<String> intervalList;
 }

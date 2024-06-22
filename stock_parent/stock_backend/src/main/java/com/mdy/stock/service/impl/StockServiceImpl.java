@@ -16,7 +16,6 @@ import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.ResponseCode;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -49,7 +49,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<List<InnerMarketDomain>> getInnerIndexAll() {
         // 1.获取最近交易时间
-        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
         // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
@@ -67,7 +67,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<List<InnerSectorDomain>> getInnerSectorAll() {
         // 1.获取最近交易时间
-        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
 
         // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
@@ -86,7 +86,7 @@ public class StockServiceImpl implements StockService {
         // 1.设置pageHelper分页参数
         PageHelper.startPage(page, pageSize);
         // 2.根据最新交易时间查询涨幅榜数据
-        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
 
         // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
@@ -104,7 +104,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<List<StockUpdownDomain>> getUpDownIncreaseInfo() {
         // 1.获取最近交易时间
-        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
 
         // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
@@ -119,7 +119,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<Map> getStockUpDownCount() {
         // 1.获取最近交易时间
-        Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
         // Todo: mock数据，暂时使用，后期删除。
         lastTime = DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.获取最近交易时间下的开盘时间
@@ -164,6 +164,8 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<Map> getStockTradeAmountForTodayAndYesterday() {
         // 1.获取今天和昨天的日期
+//        DateTime curTime = DateTimeUtil.getLastValidDate(DateTime.now());
+//        DateTime lastTime = DateTimeUtil.getPreDateTime(curTime);
         // Todo: mock数据，暂时使用，后期删除。
         DateTime curTime = DateTime.parse("2022-01-03 00:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
         DateTime yesterdayTime = curTime.minusDays(1);
@@ -183,6 +185,48 @@ public class StockServiceImpl implements StockService {
         Map<String, List<Map>> infoMap = new HashMap<>();
         infoMap.put("amtList", amtList);
         infoMap.put("yesAmtList", yesAmtList);
+        return R.ok(infoMap);
+    }
+
+    /**
+     * 获取涨跌区间计数
+     * @return R
+     */
+    @Override
+    public R<Map<String, Object>> getStockUpDownIntervalCnt() {
+        // 1.获取最近交易时间
+        DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
+        Date lastTime = lastTimeOfDateTime.toDate();
+        // Todo: mock数据
+        lastTimeOfDateTime = DateTime.parse("2022-1-6 09:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        lastTime = DateTime.parse("2022-1-6 09:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2.查询数据
+        List<Map<String, Object>> intervalCnt = stockRtInfoMapper.findUpDownInterValCnt(lastTime);
+
+
+        // 获取固定的区间列表
+        List<String> intervalList = stockInfoConfig.getIntervalList();
+        List<Map<String, Object>> intervalCntLinkedList = new ArrayList<>();
+        for (String interval : intervalList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", interval);
+            map.put("count", 0);
+            intervalCntLinkedList.add(map);
+        }
+
+        for (Map<String, Object> objectMap : intervalCnt) {
+            for (Map<String, Object> a : intervalCntLinkedList) {
+                if (a.get("title").equals(objectMap.get("title"))) {
+                    a.put("count", objectMap.get("count"));
+                }
+            }
+        }
+
+        // 3.封装并返回数据
+
+        Map<String, Object> infoMap = new HashMap<>();
+        infoMap.put("time", lastTimeOfDateTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        infoMap.put("infos", intervalCntLinkedList);
         return R.ok(infoMap);
     }
 

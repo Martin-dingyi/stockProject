@@ -11,7 +11,6 @@ import org.joda.time.format.DateTimeFormat;
 public class DateTimeUtil {
     /**
      * 获取指定日期下股票的上一个有效交易日时间
-     *
      * @return
      */
     public static DateTime getPreviousTradingDay(DateTime dateTime) {
@@ -36,7 +35,6 @@ public class DateTimeUtil {
 
     /**
      * 判断是否是工作日
-     *
      * @return true：在工作日 false:不在工作日
      */
     public static boolean isWorkDay(DateTime dateTime) {
@@ -46,8 +44,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * 获取上一天日期
-     *
+     * 获取目标时间下昨天的日期
      * @param dateTime
      * @return
      */
@@ -56,8 +53,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * 日期转String
-     *
+     * 根据patter将日期转成String
      * @param dateTime 日期
      * @param pattern  日期正则格式
      * @return
@@ -68,17 +64,15 @@ public class DateTimeUtil {
 
     /**
      * 获取股票日期格式字符串
-     *
      * @param dateTime
      * @return
      */
-    public static String parseToString4Stock(DateTime dateTime) {
+    public static String parseToStringStock(DateTime dateTime) {
         return parseToString(dateTime, "yyyyMMddHHmmss");
     }
 
     /**
      * 获取指定日期的开盘时间
-     *
      * @param dateTime
      * @return
      */
@@ -88,7 +82,6 @@ public class DateTimeUtil {
 
     /**
      * 获取指定日期的收盘时间
-     *
      * @param dateTime
      * @return
      */
@@ -97,25 +90,23 @@ public class DateTimeUtil {
     }
 
     /**
-     * 获取最近的股票有效时间，精确到分钟
-     *
-     * @param target
-     * @return
+     * 获取离目标日期最近的股票有效时间，精确到分钟
+     * @param target 目标日期
+     * @return 字符串类型的日期
      */
-    public static String getLastDateString4Stock(DateTime target) {
-        DateTime dateTime = getLastDate4Stock(target);
+    public static String getLastValidDateOfString(DateTime target) {
+        DateTime dateTime = getLastValidDate(target);
         // 消除DateTime中秒的方法
         dateTime = getDateTimeWithoutSecond(dateTime);
-        return parseToString4Stock(dateTime);
+        return parseToStringStock(dateTime);
     }
 
     /**
-     * 获取最近的股票有效时间，精确到分钟
-     *
-     * @param target
-     * @return
+     * 获取离目标日期最近的股票有效时间，精确到分钟
+     * @param target 目标日期
+     * @return DateTime类型的日期
      */
-    public static DateTime getLastDate4Stock(DateTime target) {
+    public static DateTime getLastValidDate(DateTime target) {
         // 判断是否是工作日
         if (isWorkDay(target)) {
             // 当前日期开盘前
@@ -137,7 +128,6 @@ public class DateTimeUtil {
 
     /**
      * 判断当前时间是否在大盘的中午休盘时间段
-     *
      * @return
      */
     public static boolean isMarketOffTime(DateTime target) {
@@ -149,8 +139,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * 将秒时归零
-     *
+     * 将分和秒归零
      * @param dateTime 指定日期
      * @return
      */
@@ -161,8 +150,7 @@ public class DateTimeUtil {
 
 
     /**
-     * 将秒时归零
-     *
+     * 将分和秒归零
      * @param dateTime 指定日期字符串，格式必须是：yyyy-MM-dd HH:mm:ss
      * @return
      */

@@ -53,5 +53,11 @@ public interface StockRtInfoMapper {
     @MapKey("time") // 当mybatis的sql返回是map类型数据时，要用该注解指定谁是key
     List<Map> findUpDownCount(@Param("openTime") Date openTime,
                               @Param("endTime") Date lastTime, @Param("flag") int flag);
-    
+
+    /**
+     * 获取涨跌区间计数
+     * @return map列表，每个map中记录区间和计数
+     */
+    @MapKey("title")
+    List<Map<String, Object>> findUpDownInterValCnt(@Param("curTime") Date time);
 }

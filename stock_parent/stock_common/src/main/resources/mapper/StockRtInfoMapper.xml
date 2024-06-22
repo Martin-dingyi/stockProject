@@ -99,6 +99,35 @@
       tmp.curTime
   </select>
 
+  <select id="findUpDownInterValCnt" resultType="map">
+    <![CDATA[
+    select
+      case
+        when tmp.rate > 0.07 then '>7%'
+        when tmp.rate > 0.05 and tmp.rate <= 0.07 then '5~7%'
+        when tmp.rate > 0.03 and tmp.rate <= 0.05 then '3~5%'
+        when tmp.rate > 0 and tmp.rate <= 0.03 then '0~3%'
+        when tmp.rate > -0.03 and tmp.rate <=0 then '-3~0%'
+        when tmp.rate > -0.05 and tmp.rate <= -0.03 then '-5~-3%'
+        when tmp.rate > -0.07 and tmp.rate <= -0.05 then '-7~-5%'
+        ELSE '<-7%'
+        end 'title',
+            count(*) as count
+    from
+      (
+      select
+      (cur_price - pre_close_price) / pre_close_price as rate
+      from
+      stock_rt_info
+      where
+      cur_time=#{curTime}
+      )
+      as tmp
+    GROUP BY title
+    ]]>
+
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info
         where  id = #{id,jdbcType=BIGINT} 

@@ -93,11 +93,19 @@ public class StockController {
 
     /**
      * 获取今天或昨天沪深两市的每分钟总交易量
-     * @return
+     * @return R
      */
     @GetMapping("/stock/tradeAmt")
     public R<Map> getStockTradeAmt() {
         return stockService.getStockTradeAmountForTodayAndYesterday();
     }
 
+    /**
+     * 获取涨跌区间计数
+     * @return R
+     */
+    @GetMapping("/stock/updown")
+    public R<Map<String, Object>> getStockUpDown() {
+        return stockService.getStockUpDownIntervalCnt();
+    }
 }
