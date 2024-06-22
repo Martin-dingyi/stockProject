@@ -76,6 +76,22 @@
       LIMIT 10
 
   </select>
+  <select id="getStockTradeAmount" resultType="map">
+    SELECT
+      DATE_FORMAT( cur_time, "%Y%m%d%H%i" ) AS time,
+      sum( trade_amount ) AS count
+    FROM
+      stock_market_index_info
+    WHERE
+      cur_time BETWEEN #{openTime} AND #{endTime}
+      AND
+        market_code IN
+        <foreach collection="codes" item="code" open="(" separator="," close=")">
+          #{code}
+        </foreach>
+    GROUP BY
+      time
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_market_index_info

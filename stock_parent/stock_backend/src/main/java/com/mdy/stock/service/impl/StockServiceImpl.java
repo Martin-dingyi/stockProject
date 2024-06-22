@@ -24,10 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author mdy
@@ -53,7 +50,7 @@ public class StockServiceImpl implements StockService {
     public R<List<InnerMarketDomain>> getInnerIndexAll() {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
-        // ！！！！mock数据，暂时使用，后期删除。
+        // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.获取所有国内大盘编码
@@ -72,7 +69,7 @@ public class StockServiceImpl implements StockService {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
 
-        // ！！！！mock数据，暂时使用，后期删除。
+        // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2021-12-21 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.根据最新交易时间查询十条数据
@@ -91,7 +88,7 @@ public class StockServiceImpl implements StockService {
         // 2.根据最新交易时间查询涨幅榜数据
         Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
 
-        // ！！！！mock数据，暂时使用，后期删除。
+        // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-06-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findAll(lastTime);
@@ -109,7 +106,7 @@ public class StockServiceImpl implements StockService {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
 
-        // ！！！！mock数据，暂时使用，后期删除。
+        // Todo: mock数据，暂时使用，后期删除。
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-06-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findFourUpDownData(lastTime);
@@ -123,7 +120,7 @@ public class StockServiceImpl implements StockService {
     public R<Map> getStockUpDownCount() {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
-        // ！！！！mock数据，暂时使用，后期删除。
+        // Todo: mock数据，暂时使用，后期删除。
         lastTime = DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.获取最近交易时间下的开盘时间
         Date openTime = DateTimeUtil.getOpenDate(DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"))).toDate();
@@ -158,6 +155,35 @@ public class StockServiceImpl implements StockService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 获取今天或昨天沪深两市的每分钟总交易量
+     * @return
+     */
+    @Override
+    public R<Map> getStockTradeAmountForTodayAndYesterday() {
+        // 1.获取今天和昨天的日期
+        // Todo: mock数据，暂时使用，后期删除。
+        DateTime curTime = DateTime.parse("2022-01-03 00:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        DateTime yesterdayTime = curTime.minusDays(1);
+        // 2.获取国内大盘编码
+        List<String> innerStockCodes = stockInfoConfig.getInner();
+        // 3.查询今明两天的每分钟交易量总额
+        List<Map> amtList =  stockMarketIndexInfoMapper.getStockTradeAmount(curTime.toDate(), curTime.plusDays(1).toDate(), innerStockCodes);
+        List<Map> yesAmtList = stockMarketIndexInfoMapper.getStockTradeAmount(yesterdayTime.toDate(), curTime.toDate(), innerStockCodes);
+        // 异常处理：如果没查到数据，则返回一个空集合
+        if (CollectionUtils.isEmpty(amtList)) {
+            amtList = new ArrayList<>();
+        }
+        if (CollectionUtils.isEmpty(yesAmtList)) {
+            yesAmtList = new ArrayList<>();
+        }
+        // 4.组装并返回数据
+        Map<String, List<Map>> infoMap = new HashMap<>();
+        infoMap.put("amtList", amtList);
+        infoMap.put("yesAmtList", yesAmtList);
+        return R.ok(infoMap);
     }
 
 }

@@ -56,4 +56,10 @@ public interface StockService {
      * @param response http响应对象
      */
     void downloadStockUpDown(Integer page, Integer pageSize, HttpServletResponse response);
+
+    /**
+     * 获取今天或昨天沪深两市的每分钟总交易量
+     * @return
+     */
+    R<Map> getStockTradeAmountForTodayAndYesterday();
 }

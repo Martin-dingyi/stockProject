@@ -91,6 +91,13 @@ public class StockController {
         stockService.downloadStockUpDown(page, pageSize, response);
     }
 
-
+    /**
+     * 获取今天或昨天沪深两市的每分钟总交易量
+     * @return
+     */
+    @GetMapping("/stock/tradeAmt")
+    public R<Map> getStockTradeAmt() {
+        return stockService.getStockTradeAmountForTodayAndYesterday();
+    }
 
 }
