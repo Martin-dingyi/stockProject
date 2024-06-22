@@ -21,13 +21,17 @@ public class CommonConfig {
     /**
     * 密码加密器
     * BCryptPasswordEncoder使用SHA-256进行加密
-    * @return
+    * @return 密码加密器
     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 生成id生成器
+     * @return id生成器
+     */
     @Bean
     public IdWorker idWorker() {
         return new IdWorker(1L, 2L);

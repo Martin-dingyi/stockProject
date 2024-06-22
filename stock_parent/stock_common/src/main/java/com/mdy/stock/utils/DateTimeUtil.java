@@ -104,7 +104,8 @@ public class DateTimeUtil {
      */
     public static String getLastDateString4Stock(DateTime target) {
         DateTime dateTime = getLastDate4Stock(target);
-        dateTime = getDateTimeWithoutSecond(dateTime); // 消除秒的方法
+        // 消除DateTime中秒的方法
+        dateTime = getDateTimeWithoutSecond(dateTime);
         return parseToString4Stock(dateTime);
     }
 

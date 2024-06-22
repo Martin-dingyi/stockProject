@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -35,13 +36,13 @@ import java.util.Map;
  */
 @Service
 public class StockServiceImpl implements StockService {
-    @Autowired
+    @Resource
     StockInfoConfig stockInfoConfig;
 
-    @Autowired
+    @Resource
     StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
 
-    @Autowired
+    @Resource
     private StockRtInfoMapper stockRtInfoMapper;
 
     /**

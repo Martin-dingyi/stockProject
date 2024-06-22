@@ -19,10 +19,10 @@ public class RedisCacheConfig {
     /**
      * 配置redisTemplate bean，自定义数据的序列化的方式
      * @param redisConnectionFactory 连接redis的工厂，底层有场景依赖启动时，自动加载
-     * @return
+     * @return Redis模板
      */
     @Bean
-    public RedisTemplate redisTemplate(@Autowired RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(@Autowired RedisConnectionFactory redisConnectionFactory) {
         // 1.构建RedisTemplate模板对象
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);

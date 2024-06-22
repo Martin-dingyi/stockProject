@@ -5,11 +5,10 @@ import com.mdy.stock.service.impl.UserServiceImpl;
 import com.mdy.stock.viewObject.request.ReqLoginVo;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
-import com.mdy.stock.viewObject.response.ResponseCode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -20,12 +19,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class userController {
+public class UserController {
 
-    @Autowired
+    @Resource
     private UserServiceImpl userService;
 
-    @Autowired
+    @Resource
     PasswordEncoder passwordEncoder;
 
     /**

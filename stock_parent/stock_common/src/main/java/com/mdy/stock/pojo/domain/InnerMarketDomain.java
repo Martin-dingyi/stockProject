@@ -24,7 +24,7 @@ public class InnerMarketDomain {
     /**
      * 当前时间
      */
-    @JsonFormat(pattern = "yyyy-mm-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private String curTime;
     /**
      * 指数名称

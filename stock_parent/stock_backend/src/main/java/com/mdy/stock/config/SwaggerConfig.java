@@ -36,12 +36,16 @@ public class SwaggerConfig {
 
     private ApiInfo buildApiInfo() {
         //网站联系方式
-//        Contact contact = new Contact("mdy","https://","xxx@qq.com");
+        Contact contact = new Contact("mdy","https://","xxx@qq.com");
         return new ApiInfoBuilder()
-                .title("今日指数-在线接口API文档") // 文档标题
-                .description("这是一个方便前后端开发人员快速了解开发接口需求的在线接口API文档") // 文档描述信息
-                .contact(new Contact("mdy", "https://", "xxx@qq.com")) // 站点联系人相关信息
-                .version("1.0.0") // 文档版本
+                // 文档标题
+                .title("今日指数-在线接口API文档")
+                // 文档描述信息
+                .description("这是一个方便前后端开发人员快速了解开发接口需求的在线接口API文档")
+                // 站点联系人相关信息
+                .contact(contact)
+                // 文档版本
+                .version("1.0.0")
                 .build();
     }
 }

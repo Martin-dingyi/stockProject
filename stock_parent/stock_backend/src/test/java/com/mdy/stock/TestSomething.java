@@ -16,9 +16,6 @@ public class TestSomething {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
     IdWorker idWorker;
 
     @Autowired
@@ -28,11 +25,6 @@ public class TestSomething {
     public void testEncoding() {
         String password = "123456";
         System.out.println(passwordEncoder.encode(password));
-    }
-
-    @Test
-    public void testRedis() {
-        System.out.println(redisTemplate.opsForValue().get("mdy"));
     }
 
     @Test

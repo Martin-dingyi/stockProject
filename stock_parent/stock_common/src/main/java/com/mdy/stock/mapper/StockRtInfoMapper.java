@@ -50,7 +50,7 @@ public interface StockRtInfoMapper {
      * @param flag 标志，代表是查询涨停还是跌停的数据
      * @return
      */
-    @MapKey("time")
+    @MapKey("time") // 当mybatis的sql返回是map类型数据时，要用该注解指定谁是key
     List<Map> findUpDownCount(@Param("openTime") Date openTime,
                               @Param("endTime") Date lastTime, @Param("flag") int flag);
     
