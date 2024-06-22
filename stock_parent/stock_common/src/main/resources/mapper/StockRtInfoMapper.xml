@@ -128,6 +128,26 @@
 
   </select>
 
+  <select id="findSingleStockMinuteDateByCode" resultType="com.mdy.stock.pojo.domain.SingleStock">
+    SELECT
+      stock_code AS CODE,
+      stock_name AS NAME,
+      cur_time AS DATE,
+      open_price AS openPrice,
+      min_price AS lowPrice,
+      max_price AS highPrice,
+      pre_close_price AS preClosePrice,
+      trade_amount AS tradeAmt,
+      trade_volume AS tradeVol,
+      cur_price AS tradePrice
+    FROM
+      stock_rt_info
+    WHERE
+      stock_code = #{code}
+    AND
+      cur_time BETWEEN #{openTime} AND #{endTime}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info
         where  id = #{id,jdbcType=BIGINT} 

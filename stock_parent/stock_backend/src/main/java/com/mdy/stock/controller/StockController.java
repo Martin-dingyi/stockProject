@@ -1,6 +1,7 @@
 package com.mdy.stock.controller;
 
 import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.SingleStock;
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
@@ -107,5 +108,15 @@ public class StockController {
     @GetMapping("/stock/updown")
     public R<Map<String, Object>> getStockUpDown() {
         return stockService.getStockUpDownIntervalCnt();
+    }
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    @GetMapping("/stock/screen/time-sharing")
+    public R<List<SingleStock>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
+        return stockService.getStockMinuteDataByCode(code);
     }
 }

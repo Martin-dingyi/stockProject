@@ -2,6 +2,7 @@ package com.mdy.stock.service;
 
 import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.SingleStock;
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
@@ -68,4 +69,11 @@ public interface StockService {
      * @return R
      */
     R<Map<String, Object>> getStockUpDownIntervalCnt();
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    R<List<SingleStock>> getStockMinuteDataByCode(String code);
 }

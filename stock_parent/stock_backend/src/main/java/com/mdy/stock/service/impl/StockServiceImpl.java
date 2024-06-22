@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
 import com.mdy.stock.mapper.StockRtInfoMapper;
 import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.SingleStock;
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockService;
@@ -226,6 +227,25 @@ public class StockServiceImpl implements StockService {
         infoMap.put("time", lastTimeOfDateTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
         infoMap.put("infos", intervalCntLinkedList);
         return R.ok(infoMap);
+    }
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    @Override
+    public R<List<SingleStock>> getStockMinuteDataByCode(String code) {
+        // 1.获取最近有效交易时间
+        DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
+        // Todo: mock数据
+        lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        Date lastTime = lastTimeOfDateTime.toDate();
+        // 2.获取最近有效时间下的开盘时间
+        Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
+        // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
+        List<SingleStock> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDateByCode(openTime, lastTime, code);
+        return R.ok(minuteStockData);
     }
 
 }

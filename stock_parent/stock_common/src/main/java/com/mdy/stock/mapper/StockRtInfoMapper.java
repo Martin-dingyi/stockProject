@@ -1,5 +1,6 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.SingleStock;
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.entity.StockRtInfo;
 import org.apache.ibatis.annotations.MapKey;
@@ -60,4 +61,12 @@ public interface StockRtInfoMapper {
      */
     @MapKey("title")
     List<Map<String, Object>> findUpDownInterValCnt(@Param("curTime") Date time);
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    List<SingleStock> findSingleStockMinuteDateByCode(@Param("openTime") Date openTime,
+                                                      @Param("endTime") Date lastTime, @Param("code") String code);
 }
