@@ -200,10 +200,11 @@ public class StockServiceImpl implements StockService {
         // Todo: mock数据
         lastTimeOfDateTime = DateTime.parse("2022-1-6 09:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
         lastTime = DateTime.parse("2022-1-6 09:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+
         // 2.查询数据
         List<Map<String, Object>> intervalCnt = stockRtInfoMapper.findUpDownInterValCnt(lastTime);
 
-
+        // 3.按顺序将数据载入相应区间
         // 获取固定的区间列表
         List<String> intervalList = stockInfoConfig.getIntervalList();
         List<Map<String, Object>> intervalCntLinkedList = new ArrayList<>();
@@ -212,18 +213,15 @@ public class StockServiceImpl implements StockService {
             map.put("title", interval);
             map.put("count", 0);
             intervalCntLinkedList.add(map);
-        }
-
-        for (Map<String, Object> objectMap : intervalCnt) {
-            for (Map<String, Object> a : intervalCntLinkedList) {
-                if (a.get("title").equals(objectMap.get("title"))) {
-                    a.put("count", objectMap.get("count"));
+            for (Map<String, Object> mapInfo : intervalCnt) {
+                if (mapInfo.containsValue(interval)) {
+                    map.put("count", mapInfo.get("count"));
+                    break;
                 }
             }
         }
 
-        // 3.封装并返回数据
-
+        // 4.封装并返回数据
         Map<String, Object> infoMap = new HashMap<>();
         infoMap.put("time", lastTimeOfDateTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
         infoMap.put("infos", intervalCntLinkedList);
