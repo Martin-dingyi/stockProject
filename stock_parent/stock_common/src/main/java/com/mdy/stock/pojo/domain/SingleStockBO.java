@@ -12,7 +12,7 @@ import java.util.Date;
  * @description 个股分时数据
  */
 @Data
-public class SingleStock {
+public class SingleStockBO {
     /**
      * 股票编码
      */

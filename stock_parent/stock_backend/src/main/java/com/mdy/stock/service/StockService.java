@@ -1,9 +1,6 @@
 package com.mdy.stock.service;
 
-import com.mdy.stock.pojo.domain.InnerMarketDomain;
-import com.mdy.stock.pojo.domain.InnerSectorDomain;
-import com.mdy.stock.pojo.domain.SingleStock;
-import com.mdy.stock.pojo.domain.StockUpdownDomain;
+import com.mdy.stock.pojo.domain.*;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 
@@ -75,5 +72,12 @@ public interface StockService {
      * @param code 股票编码
      * @return R
      */
-    R<List<SingleStock>> getStockMinuteDataByCode(String code);
+    R<List<SingleStockBO>> getStockMinuteDataByCode(String code);
+
+    /**
+     * 根据编码获取单一股票最近几天的日k线数据
+     * @param code 股票编码
+     * @return R
+     */
+    R<List<StockDayBO>> getStockDayDataByCode(String code);
 }

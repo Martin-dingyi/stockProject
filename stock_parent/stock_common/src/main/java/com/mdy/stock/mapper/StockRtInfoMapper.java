@@ -1,6 +1,7 @@
 package com.mdy.stock.mapper;
 
-import com.mdy.stock.pojo.domain.SingleStock;
+import com.mdy.stock.pojo.domain.SingleStockBO;
+import com.mdy.stock.pojo.domain.StockDayBO;
 import com.mdy.stock.pojo.domain.StockUpdownDomain;
 import com.mdy.stock.pojo.entity.StockRtInfo;
 import org.apache.ibatis.annotations.MapKey;
@@ -67,6 +68,12 @@ public interface StockRtInfoMapper {
      * @param code 股票编码
      * @return R
      */
-    List<SingleStock> findSingleStockMinuteDateByCode(@Param("openTime") Date openTime,
-                                                      @Param("endTime") Date lastTime, @Param("code") String code);
+    List<SingleStockBO> findSingleStockMinuteDataByCode(@Param("openTime") Date openTime,
+                                                        @Param("endTime") Date lastTime, @Param("code") String code);
+    /**
+     * 根据编码获取单一股票最近几天的日k线数据
+     * @param code 股票编码
+     * @return R
+     */
+    List<StockDayBO> findStockKDayDataByCode(@Param("startDate") Date lastTimePreMouth, @Param("endDate") Date lastTime, @Param("code") String code);
 }

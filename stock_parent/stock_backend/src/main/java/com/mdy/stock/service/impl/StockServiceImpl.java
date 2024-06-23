@@ -5,13 +5,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
 import com.mdy.stock.mapper.StockRtInfoMapper;
-import com.mdy.stock.pojo.domain.InnerSectorDomain;
-import com.mdy.stock.pojo.domain.SingleStock;
-import com.mdy.stock.pojo.domain.StockUpdownDomain;
+import com.mdy.stock.pojo.domain.*;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.utils.DateTimeUtil;
-import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.ResponseCode;
@@ -24,7 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -235,7 +231,7 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<SingleStock>> getStockMinuteDataByCode(String code) {
+    public R<List<SingleStockBO>> getStockMinuteDataByCode(String code) {
         // 1.获取最近有效交易时间
         DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
         // Todo: mock数据
@@ -244,8 +240,27 @@ public class StockServiceImpl implements StockService {
         // 2.获取最近有效时间下的开盘时间
         Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
         // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
-        List<SingleStock> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDateByCode(openTime, lastTime, code);
+        List<SingleStockBO> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
         return R.ok(minuteStockData);
+    }
+
+    /**
+     * 根据编码获取单一股票最近几天的日k线数据
+     * @param code 股票编码
+     * @return R
+     */
+    @Override
+    public R<List<StockDayBO>> getStockDayDataByCode(String code) {
+        // 1.获取最近有效交易时间
+        DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
+        // Todo: mock数据
+        lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+        Date lastTime = lastTimeOfDateTime.toDate();
+        // 2.获取最近交易时间前一个月的日期
+        Date lastTimePreMouth = lastTimeOfDateTime.minusMonths(1).toDate();
+        // 3.根据开始和结束日期，查出这个期间编码为code的股票的所有日k线数据
+        List<StockDayBO> stockDayBOList = stockRtInfoMapper.findStockKDayDataByCode(lastTimePreMouth, lastTime, code);
+        return R.ok(stockDayBOList);
     }
 
 }

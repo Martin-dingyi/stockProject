@@ -1,10 +1,7 @@
 package com.mdy.stock.controller;
 
-import com.mdy.stock.pojo.domain.InnerSectorDomain;
-import com.mdy.stock.pojo.domain.SingleStock;
-import com.mdy.stock.pojo.domain.StockUpdownDomain;
+import com.mdy.stock.pojo.domain.*;
 import com.mdy.stock.service.StockService;
-import com.mdy.stock.pojo.domain.InnerMarketDomain;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,7 +113,17 @@ public class StockController {
      * @return R
      */
     @GetMapping("/stock/screen/time-sharing")
-    public R<List<SingleStock>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
+    public R<List<SingleStockBO>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
         return stockService.getStockMinuteDataByCode(code);
+    }
+
+    /**
+     * 根据编码获取单一股票最近几天的日k线数据
+     * @param code 股票编码
+     * @return R
+     */
+    @GetMapping("/stock/screen/dkline")
+    public R<List<StockDayBO>> getStockDayDataByCode(@RequestParam(name = "code") String code) {
+        return stockService.getStockDayDataByCode(code);
     }
 }
