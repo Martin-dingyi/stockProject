@@ -231,7 +231,7 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<SingleStockBO>> getStockMinuteDataByCode(String code) {
+    public R<List<SingleStock>> getStockMinuteDataByCode(String code) {
         // 1.获取最近有效交易时间
         DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
         // Todo: mock数据
@@ -240,7 +240,7 @@ public class StockServiceImpl implements StockService {
         // 2.获取最近有效时间下的开盘时间
         Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
         // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
-        List<SingleStockBO> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
+        List<SingleStock> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
         return R.ok(minuteStockData);
     }
 

@@ -113,7 +113,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/stock/screen/time-sharing")
-    public R<List<SingleStockBO>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
+    public R<List<SingleStock>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
         return stockService.getStockMinuteDataByCode(code);
     }
 

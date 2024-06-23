@@ -148,6 +148,53 @@
       cur_time BETWEEN #{openTime} AND #{endTime}
   </select>
 
+  <select id="findStockKDayDataByCode" resultType="com.mdy.stock.pojo.domain.StockDayBO">
+    SELECT
+      stock_code as code,
+      stock_name as name,
+      open_price as openPrice,
+      pre_close_price as preClosePrice,
+      max_price as highPrice,
+      min_price as lowPrice,
+      trade_amount as tradeAmt,
+      trade_volume as tradeVol,
+      cur_price as closePrice,
+      cur_time as date
+    FROM
+      stock_rt_info
+    where
+      stock_code=#{code} AND
+      cur_time in
+      (
+        SELECT
+          max(cur_time) as maxTime
+        FROM
+          stock_rt_info
+        where
+          cur_time BETWEEN #{startDate} and #{endDate}
+        GROUP BY DATE_FORMAT(cur_time,'%Y%m%d')
+      )
+  </select>
+
+  <select id="findSingleStockMinuteDataByCode" resultType="com.mdy.stock.pojo.domain.SingleStock">
+    SELECT
+      stock_code AS CODE,
+      stock_name AS NAME,
+      cur_time AS DATE,
+      open_price AS openPrice,
+      min_price AS lowPrice,
+      max_price AS highPrice,
+      pre_close_price AS preClosePrice,
+      trade_amount AS tradeAmt,
+      trade_volume AS tradeVol,
+      cur_price AS tradePrice
+    FROM
+      stock_rt_info
+    WHERE
+      stock_code = #{code} and
+      cur_time between #{openTime} and #{endTime}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info
         where  id = #{id,jdbcType=BIGINT} 

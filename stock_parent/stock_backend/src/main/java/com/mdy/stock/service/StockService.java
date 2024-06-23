@@ -72,7 +72,7 @@ public interface StockService {
      * @param code 股票编码
      * @return R
      */
-    R<List<SingleStockBO>> getStockMinuteDataByCode(String code);
+    R<List<SingleStock>> getStockMinuteDataByCode(String code);
 
     /**
      * 根据编码获取单一股票最近几天的日k线数据
