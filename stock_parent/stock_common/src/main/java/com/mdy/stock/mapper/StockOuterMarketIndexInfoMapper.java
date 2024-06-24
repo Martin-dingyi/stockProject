@@ -1,6 +1,10 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
 import com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author martin
@@ -22,4 +26,9 @@ public interface StockOuterMarketIndexInfoMapper {
 
     int updateByPrimaryKey(StockOuterMarketIndexInfo record);
 
+    /**
+     * 批量导入国内大盘指数信息
+     * @param stockMarketIndexInfos 大盘指数信息列表
+     */
+    void insertStockInfosPatch(@Param("stockMarketIndexInfos") List<StockMarketIndexInfo> stockMarketIndexInfos);
 }

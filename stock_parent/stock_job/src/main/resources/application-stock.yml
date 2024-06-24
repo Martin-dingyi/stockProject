@@ -10,4 +10,5 @@ stock:
     - int_nikkei # 日经指数
     - b_FSSTI # 新加坡
   market_url: http://api.mairui.club/zs/sssj/
+  licence: 96bb56268f791a1a63
 #  block_url:

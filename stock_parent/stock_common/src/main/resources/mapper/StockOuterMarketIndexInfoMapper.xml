@@ -61,7 +61,27 @@
                 <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo">
+
+  <insert id="insertStockInfosPatch">
+    insert into stock_market_index_info
+    (
+     id, market_code, cur_time,
+     market_name, pre_close_point, open_point,
+     cur_point, min_point, max_point,
+     trade_amount, trade_volume
+    )
+    VALUES
+    <foreach collection="stockMarketIndexInfos" item="smi" separator=",">
+      (
+       #{smi.id,jdbcType=BIGINT}, #{smi.marketCode,jdbcType=CHAR}, #{smi.curTime,jdbcType=TIMESTAMP},
+       #{smi.marketName,jdbcType=VARCHAR}, #{smi.preClosePoint,jdbcType=DECIMAL}, #{smi.openPoint,jdbcType=DECIMAL},
+       #{smi.curPoint,jdbcType=DECIMAL}, #{smi.minPoint,jdbcType=DECIMAL}, #{smi.maxPoint,jdbcType=DECIMAL},
+       #{smi.tradeAmount,jdbcType=BIGINT},#{smi.tradeVolume,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo">
         update stock_outer_market_index_info
         <set>
                 <if test="marketCode != null">
