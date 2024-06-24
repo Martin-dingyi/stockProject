@@ -10,15 +10,16 @@ import java.util.Date;
 
 /**
  * @author mdy
- * @date 2024-06-24 17:13
+ * @date 2024-06-25 2:08
  * @description
  */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InnerStockDataDO {
+public class InnerStockDO {
     /**
-     * 前收盘价
+     * 昨日收盘价
      */
     private BigDecimal yc;
     /**
@@ -30,21 +31,13 @@ public class InnerStockDataDO {
      */
     private BigDecimal p;
     /**
-     * 最高价
-     */
-    private BigDecimal h;
-    /**
      * 最低价
      */
     private BigDecimal l;
     /**
-     * 涨跌额
+     * 最低价
      */
-    private BigDecimal ud;
-    /**
-     * 涨跌幅
-     */
-    private BigDecimal pc;
+    private BigDecimal h;
     /**
      * 成交量
      */
@@ -54,7 +47,7 @@ public class InnerStockDataDO {
      */
     private BigDecimal cje;
     /**
-     * 当前时间
+     * 当前日期
      */
-    String t;
+    private String t;
 }

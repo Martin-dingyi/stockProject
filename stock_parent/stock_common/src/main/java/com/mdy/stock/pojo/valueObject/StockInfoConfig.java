@@ -30,6 +30,14 @@ public class StockInfoConfig {
     // 板块数据公共url
     private String blockUrl;
 
+    // 个股数据公共url
+    private String stockUrl;
+
+    // 获取个股列表的url
+    private String stockCodeUrl;
+
     // 麦蕊智数的licence证书
     private String licence;
+
+
 }

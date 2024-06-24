@@ -76,4 +76,10 @@ public interface StockRtInfoMapper {
      * @return R
      */
     List<StockDayBO> findStockKDayDataByCode(@Param("startDate") Date lastTimePreMouth, @Param("endDate") Date lastTime, @Param("code") String code);
+
+    /**
+     * 将所有StockRtInfo批量插入到数据库中
+     * @param stockRtInfoList 个股数据列表
+     */
+    void insertStockRtInfoList(@Param("stockList") List<StockRtInfo> stockRtInfoList);
 }
