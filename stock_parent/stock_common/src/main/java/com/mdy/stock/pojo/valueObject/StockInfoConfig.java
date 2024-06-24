@@ -16,11 +16,17 @@ import java.util.List;
 public class StockInfoConfig {
 
     // A股大盘id信息
-    private List<String> inner;
+    private List<String> innerMarketId;
 
     // 外盘id信息
-    private List<String> outer;
+    private List<String> outerMarketId;
 
     // 固定涨跌区别列表
     private List<String> intervalList;
+
+    // 大盘数据公共url
+    private String marketUrl;
+
+    // 板块数据公共url
+    private String blockUrl;
 }

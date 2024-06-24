@@ -51,7 +51,7 @@ public class StockServiceImpl implements StockService {
         // DateTime.parse作用：将字符串转化为DateTime类型
         lastTime = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2.获取所有国内大盘编码
-        List<String> innerMarketCodes = stockInfoConfig.getInner();
+        List<String> innerMarketCodes = stockInfoConfig.getInnerMarketId();
         // 3.根据最近时间和大盘编码查询数据库
         List<InnerMarketDomain> infos = stockMarketIndexInfoMapper.getInnerMarketInfo(lastTime, innerMarketCodes);
         return R.ok(infos);
@@ -167,7 +167,7 @@ public class StockServiceImpl implements StockService {
         DateTime curTime = DateTime.parse("2022-01-03 00:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
         DateTime yesterdayTime = curTime.minusDays(1);
         // 2.获取国内大盘编码
-        List<String> innerStockCodes = stockInfoConfig.getInner();
+        List<String> innerStockCodes = stockInfoConfig.getInnerMarketId();
         // 3.查询今明两天的每分钟交易量总额
         List<Map> amtList =  stockMarketIndexInfoMapper.getStockTradeAmount(curTime.toDate(), curTime.plusDays(1).toDate(), innerStockCodes);
         List<Map> yesAmtList = stockMarketIndexInfoMapper.getStockTradeAmount(yesterdayTime.toDate(), curTime.toDate(), innerStockCodes);

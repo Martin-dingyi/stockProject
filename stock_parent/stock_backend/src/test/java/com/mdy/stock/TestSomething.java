@@ -5,7 +5,6 @@ import com.mdy.stock.utils.IdWorker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
@@ -34,6 +33,6 @@ public class TestSomething {
 
     @Test
     public void testConfigProperties() {
-        System.out.println(Arrays.toString(stockInfoConfig.getInner().toArray()));
+        System.out.println(Arrays.toString(stockInfoConfig.getInnerMarketId().toArray()));
     }
 }
