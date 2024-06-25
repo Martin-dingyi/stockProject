@@ -1,6 +1,7 @@
 package com.mdy.stock.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
@@ -12,6 +13,7 @@ import com.mdy.stock.utils.DateTimeUtil;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.ResponseCode;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import java.util.*;
  * @description
  */
 @Service
+@Slf4j
 public class StockServiceImpl implements StockService {
     @Resource
     StockInfoConfig stockInfoConfig;
@@ -39,27 +42,34 @@ public class StockServiceImpl implements StockService {
     @Resource
     private StockRtInfoMapper stockRtInfoMapper;
 
+    @Resource
+    private Cache<String, R> caffeineCache;
+
     /**
-     * 获取最近交易时间，从配置文件中获取所有国内大盘id，根据这两个数据查询国内大盘信息
-     * @return
+     * 获取两个国内大盘指数信息
+     * @return R
      */
     @Override
     public R<List<InnerMarketDomain>> getInnerIndexAll() {
-        // 1.获取最近交易时间
-        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
-        // Todo: mock数据，暂时使用，后期删除。
-        // DateTime.parse作用：将字符串转化为DateTime类型
-        lastTime = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-        // 2.获取所有国内大盘编码
-        List<String> innerMarketCodes = stockInfoConfig.getInnerMarketId();
-        // 3.根据最近时间和大盘编码查询数据库
-        List<InnerMarketDomain> infos = stockMarketIndexInfoMapper.getInnerMarketInfo(lastTime, innerMarketCodes);
-        return R.ok(infos);
+        R<List<InnerMarketDomain>> data = caffeineCache.get("marketInfo", key -> {
+            // 如果缓存不存在，向数据库查询。
+            // 1.获取最近交易时间
+            Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
+            // Todo: mock数据，暂时使用，后期删除。
+            // DateTime.parse作用：将字符串转化为DateTime类型
+            lastTime = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+            // 2.获取所有国内大盘编码
+            List<String> innerMarketCodes = stockInfoConfig.getInnerMarketId();
+            // 3.根据最近时间和大盘编码查询数据库
+            List<InnerMarketDomain> infos = stockMarketIndexInfoMapper.getInnerMarketInfo(lastTime, innerMarketCodes);
+            return R.ok(infos);
+        });
+        return data;
     }
 
     /**
      * 获取最新国内板块的十条数据，按照交易量降序排列
-     * @return
+     * @return R
      */
     @Override
     public R<List<InnerSectorDomain>> getInnerSectorAll() {
@@ -78,6 +88,12 @@ public class StockServiceImpl implements StockService {
         return R.ok(innerMarketSectorInfos);
     }
 
+    /**
+     * 获取涨跌幅的分页数据
+     * @param page 当前页
+     * @param pageSize 页大小
+     * @return R
+     */
     @Override
     public R<PageResult<StockUpdownDomain>> getStockUpDownPageInfos(Integer page, Integer pageSize) {
         // 1.设置pageHelper分页参数
@@ -98,6 +114,10 @@ public class StockServiceImpl implements StockService {
         return R.ok(pageResult);
     }
 
+    /**
+     * 获取所有涨跌幅数据
+     * @return R
+     */
     @Override
     public R<List<StockUpdownDomain>> getUpDownIncreaseInfo() {
         // 1.获取最近交易时间
@@ -113,6 +133,10 @@ public class StockServiceImpl implements StockService {
         return R.ok(stockUpDownInfos);
     }
 
+    /**
+     * 获取各个股票涨跌停的次数
+     * @return R
+     */
     @Override
     public R<Map> getStockUpDownCount() {
         // 1.获取最近交易时间
@@ -156,7 +180,7 @@ public class StockServiceImpl implements StockService {
 
     /**
      * 获取今天或昨天沪深两市的每分钟总交易量
-     * @return
+     * @return R
      */
     @Override
     public R<Map> getStockTradeAmountForTodayAndYesterday() {
@@ -232,16 +256,20 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<List<SingleStock>> getStockMinuteDataByCode(String code) {
-        // 1.获取最近有效交易时间
-        DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
-        // Todo: mock数据
-        lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
-        Date lastTime = lastTimeOfDateTime.toDate();
-        // 2.获取最近有效时间下的开盘时间
-        Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
-        // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
-        List<SingleStock> minuteStockData= stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
-        return R.ok(minuteStockData);
+        R<List<SingleStock>> data = caffeineCache.get("stockInfo", key -> {
+            // 如果缓存不存在，向数据库查询。
+            // 1.获取最近有效交易时间
+            DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
+            // Todo: mock数据
+            lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+            Date lastTime = lastTimeOfDateTime.toDate();
+            // 2.获取最近有效时间下的开盘时间
+            Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
+            // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
+            List<SingleStock> minuteStockList = stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
+            return R.ok(minuteStockList);
+        });
+        return data;
     }
 
     /**
@@ -251,16 +279,20 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<List<StockDayBO>> getStockDayDataByCode(String code) {
-        // 1.获取最近有效交易时间
-        DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
-        // Todo: mock数据
-        lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
-        Date lastTime = lastTimeOfDateTime.toDate();
-        // 2.获取最近交易时间前一个月的日期
-        Date lastTimePreMouth = lastTimeOfDateTime.minusMonths(1).toDate();
-        // 3.根据开始和结束日期，查出这个期间编码为code的股票的所有日k线数据
-        List<StockDayBO> stockDayBOList = stockRtInfoMapper.findStockKDayDataByCode(lastTimePreMouth, lastTime, code);
-        return R.ok(stockDayBOList);
+        R<List<StockDayBO>> data = caffeineCache.get("stockInfoDay", key -> {
+            // 如果缓存不存在，向数据库查询。
+            // 1.获取最近有效交易时间
+            DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now());
+            // Todo: mock数据
+            lastTimeOfDateTime = DateTime.parse("2021-12-30 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+            Date lastTime = lastTimeOfDateTime.toDate();
+            // 2.获取最近交易时间前一个月的日期
+            Date lastTimePreMouth = lastTimeOfDateTime.minusMonths(1).toDate();
+            // 3.根据开始和结束日期，查出这个期间编码为code的股票的所有日k线数据
+            List<StockDayBO> stockDayBOList = stockRtInfoMapper.findStockKDayDataByCode(lastTimePreMouth, lastTime, code);
+            return R.ok(stockDayBOList);
+        });
+        return data;
     }
 
 }

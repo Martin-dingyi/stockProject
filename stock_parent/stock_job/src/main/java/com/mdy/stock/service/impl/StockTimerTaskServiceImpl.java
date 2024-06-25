@@ -16,6 +16,7 @@ import org.apache.ibatis.javassist.compiler.ast.StringL;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -55,13 +56,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
     @Resource
     StockRtInfoMapper stockRtInfoMapper;
 
-    private String getMarketNameByCode(String code) {
-        switch (code) {
-            case "sh000001": return "上证指数";
-            case "sz399001": return "深圳指数";
-            default: return "未知国内指数";
-        }
-    }
+    @Resource
+    RabbitTemplate rabbitTemplate;
 
     /**
      * 获取国内大盘的实时数据信息
@@ -112,9 +108,14 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
                 return;
             }
         }
+
         // 向数据库批量导入大盘指数信息
         int insertCnt =  stockOuterMarketIndexInfoMapper.insertStockInfosPatch(stockMarketIndexInfos);
         log.info("当前时间:{} 插入了{}条国内大盘指数数据", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), insertCnt);
+
+        // 向主服务发送信息，告知现在需要刷新数据
+        rabbitTemplate.convertAndSend("stockExchange", "inner.market", new Date());
+
     }
 
 
@@ -171,6 +172,9 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         // 将数据批量添加进数据库
         int insertCnt = stockRtInfoMapper.insertStockRtInfoList(stockRtInfos);
         log.info("当前时间:{} 插入了{}条国内大盘指数数据", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), insertCnt);
+
+        // 向主服务发送信息，告知现在需要刷新数据
+        rabbitTemplate.convertAndSend("stockExchange", "inner.stock", new Date());
     }
 
 
