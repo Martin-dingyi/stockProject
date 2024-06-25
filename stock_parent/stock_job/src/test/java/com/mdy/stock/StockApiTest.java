@@ -31,18 +31,18 @@ public class StockApiTest {
 
     @Test
     public void test2() {
-        stockTimerTaskService.getAndInsectInnerMarketInfo();
+        stockTimerTaskService.getAndInsertInnerMarketInfo();
     }
 
     @Test
     public void test3() {
-        stockTimerTaskService.getStockInfo();
+        stockTimerTaskService.getAndInsertStockInfo();
     }
 
     @Test
     public void sinaStockApiTest() {
         // 1.定义采集的url接口
-        String url = "http://hq.sinajs.cn/list=" + "sh000001";
+        String url = "http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData";
         // 2.调用restTemplate采集数据
         // 组装请求头
         HttpHeaders headers = new HttpHeaders();
@@ -70,6 +70,7 @@ public class StockApiTest {
         } else {
             System.out.println("解析匹配失敗");
         }
-
     }
+
+
 }

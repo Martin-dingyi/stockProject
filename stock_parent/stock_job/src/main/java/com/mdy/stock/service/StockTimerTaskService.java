@@ -9,10 +9,10 @@ public interface StockTimerTaskService {
     /**
      * 获取国内大盘的实时数据信息
      */
-    void getAndInsectInnerMarketInfo();
+    void getAndInsertInnerMarketInfo();
 
     /**
      * 获取沪深两市个股的实时数据信息
      */
-    void getStockInfo();
+    void getAndInsertStockInfo();
 }

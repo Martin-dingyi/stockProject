@@ -12,6 +12,7 @@ import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockTimerTaskService;
 import com.mdy.stock.utils.IdWorker;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.javassist.compiler.ast.StringL;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -66,14 +67,13 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
      * 获取国内大盘的实时数据信息
      */
     @Override
-    public void getAndInsectInnerMarketInfo() {
+    public void getAndInsertInnerMarketInfo() {
         List<String> marketCodeList = stockInfoConfig.getInnerMarketId();
-        // 组装请求头
+        // 组装请求对象
         HttpHeaders headers = new HttpHeaders();
         // 请求头设置，绕开屏蔽
         headers.add("Referer", "https://finance.sina.com.cn/stock/");
         headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
-        // 组装请求对象
         HttpEntity<Object> entity = new HttpEntity<>(headers);
 
         // stockMarketIndexInfos用于存储读取到的国内大盘数据
@@ -122,9 +122,55 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
      * 获取沪深两市所有个股的实时数据信息，并向数据库插入该数据
      */
     @Override
-    public void getStockInfo() {
-        // 获取股票列表
+    public void getAndInsertStockInfo() {
+        // 获取个股列表
+        List<String> stockCodeList = stockRtInfoMapper.findStockCodeList();
 
+        // 组装请求对象
+        HttpHeaders headers = new HttpHeaders();
+        // 请求头设置，绕开屏蔽
+        headers.add("Referer", "https://finance.sina.com.cn/stock/");
+        headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
+        HttpEntity<Object> entity = new HttpEntity<>(headers);
+
+        // 编辑reg匹配信息
+        String reg = "var hq_str_(.+)=\"(.+)\"";
+        // 编译表达式,获取编译对象
+        Pattern pattern = Pattern.compile(reg);
+
+        List<StockRtInfo> stockRtInfos = new ArrayList<>();
+        // 一次获取20个股票数据，降低网络、磁盘IO负担
+        Lists.partition(stockCodeList, 20).forEach(list -> {
+            for (String code : list) {
+                String url = stockInfoConfig.getAStockUrl() + (code.startsWith("00") ? "sz" : "sh") + code;
+                String marketInfoStr = restTemplate.postForObject(url, entity, String.class);
+                Matcher matcher = pattern.matcher(marketInfoStr);
+                if (matcher.find()) {
+                    List<String> info = Arrays.asList(matcher.group(2).split(","));
+                    StockRtInfo stockRtInfo = StockRtInfo.builder()
+                            .id(idWorker.nextId())
+                            .stockCode(code)
+                            .stockName(info.get(0))
+                            .openPrice(new BigDecimal(info.get(1)))
+                            .preClosePrice(new BigDecimal(info.get(2)))
+                            .curPrice(new BigDecimal(info.get(3)))
+                            .maxPrice(new BigDecimal(info.get(4)))
+                            .minPrice(new BigDecimal(info.get(5)))
+                            .tradeAmount(Long.valueOf(info.get(8)))
+                            .tradeVolume(new BigDecimal(info.get(9)))
+                            .curTime(DateTime.parse(info.get(30) + " " + info.get(31), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate())
+                            .build();
+                    stockRtInfos.add(stockRtInfo);
+                } else {
+                    log.error("无法读取远程数据库的股票指数信息，原因：字符串解析出错");
+                    return;
+                }
+            }
+        });
+
+        // 将数据批量添加进数据库
+        int insertCnt = stockRtInfoMapper.insertStockRtInfoList(stockRtInfos);
+        log.info("当前时间:{} 插入了{}条国内大盘指数数据", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), insertCnt);
     }
 
 

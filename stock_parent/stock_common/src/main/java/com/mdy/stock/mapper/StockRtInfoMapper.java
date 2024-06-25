@@ -79,7 +79,15 @@ public interface StockRtInfoMapper {
 
     /**
      * 将所有StockRtInfo批量插入到数据库中
+     *
      * @param stockRtInfoList 个股数据列表
+     * @return
      */
-    void insertStockRtInfoList(@Param("stockList") List<StockRtInfo> stockRtInfoList);
+    int insertStockRtInfoList(@Param("stockList") List<StockRtInfo> stockRtInfoList);
+
+    /**
+     * 查询数据库内所有股票编码
+     * @return 股票编码列表
+     */
+    List<String> findStockCodeList();
 }
