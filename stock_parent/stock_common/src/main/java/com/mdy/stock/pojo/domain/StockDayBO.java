@@ -14,18 +14,21 @@ import java.util.Date;
 @Data
 public class StockDayBO {
     /**
-     * 当前收盘价（指收盘时的价格，如果当天未收盘，则显示最新cur_price）
-     */
-    private BigDecimal closePrice;
-    /**
      * 股票编码
      */
     private String code;
     /**
-     * 日期
+     * 名称
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
-    private Date date;
+    private String name;
+    /**
+     * 前收盘价
+     */
+    private BigDecimal preClosePrice;
+    /**
+     * 开盘价
+     */
+    private BigDecimal openPrice;
     /**
      * 最高价（指收盘时记录的最高价，如果当天未收盘，则显示最新数据）
      */
@@ -35,17 +38,9 @@ public class StockDayBO {
      */
     private BigDecimal lowPrice;
     /**
-     * 名称
+     * 当前收盘价（指收盘时的价格，如果当天未收盘，则显示最新cur_price）
      */
-    private String name;
-    /**
-     * 开盘价
-     */
-    private BigDecimal openPrice;
-    /**
-     * 前收盘价
-     */
-    private BigDecimal preClosePrice;
+    private BigDecimal closePrice;
     /**
      * 交易量(指收盘时的交易量，如果当天未收盘，则显示最新数据)
      */
@@ -54,4 +49,9 @@ public class StockDayBO {
      * 交易金额（指收盘时记录交易量，如果当天未收盘，则显示最新数据）
      */
     private BigDecimal tradeVol;
+    /**
+     * 日期
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
+    private Date date;
 }

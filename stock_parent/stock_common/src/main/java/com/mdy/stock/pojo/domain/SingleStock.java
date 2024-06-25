@@ -17,42 +17,41 @@ public class SingleStock {
      * 股票编码
      */
     private String code;
-
-    /**
-     * 当前时间，精确到分钟
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date date;
-    /**
-     * 最高价格
-     */
-    private BigDecimal highPrice;
-    /**
-     * 最低价格
-     */
-    private BigDecimal lowPrice;
     /**
      * 股票名称
      */
     private String name;
     /**
-     * 开盘价
-     */
-    private BigDecimal openPrice;
-    /**
      * 前收盘价格
      */
     private BigDecimal preClosePrice;
     /**
-     * 当前交易量
+     * 开盘价
      */
-    private BigDecimal tradeAmt;
+    private BigDecimal openPrice;
     /**
      * 当前价格（最新价格）
      */
     private BigDecimal tradePrice;
     /**
+     * 最低价格
+     */
+    private BigDecimal lowPrice;
+    /**
+     * 最高价格
+     */
+    private BigDecimal highPrice;
+    /**
+     * 当前交易量
+     */
+    private BigDecimal tradeAmt;
+    /**
      * 交易金额
      */
     private BigDecimal tradeVol;
+    /**
+     * 当前时间，精确到分钟
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date date;
 }

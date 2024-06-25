@@ -24,20 +24,16 @@ public class StockInfoConfig {
     // 固定涨跌区别列表
     private List<String> intervalList;
 
-    // 大盘数据公共url
-    private String marketUrl;
+    // 国内大盘数据公共url
+    private String innerMarketUrl;
 
-    // 板块数据公共url
-    private String blockUrl;
+    // 国外大盘数据公共url
+    private String outerMarketUrl;
+
+    // 国内板块数据公共url
+    private String innerBlockUrl;
 
     // 个股数据公共url
-    private String stockUrl;
-
-    // 获取个股列表的url
-    private String stockCodeUrl;
-
-    // 麦蕊智数的licence证书
-    private String licence;
-
+    private String aStockUrl;
 
 }

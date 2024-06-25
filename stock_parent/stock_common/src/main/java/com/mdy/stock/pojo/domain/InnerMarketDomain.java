@@ -18,30 +18,21 @@ public class InnerMarketDomain {
      */
     private String code;
     /**
-     * 当前点
-     */
-    private BigDecimal curPoint;
-    /**
-     * 当前时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private String curTime;
-    /**
      * 指数名称
      */
     private String name;
-    /**
-     * 开盘点
-     */
-    private BigDecimal openPoint;
     /**
      * 前收盘点
      */
     private BigDecimal preClosePoint;
     /**
-     * 涨幅
+     * 开盘点
      */
-    private BigDecimal rose;
+    private BigDecimal openPoint;
+    /**
+     * 当前点
+     */
+    private BigDecimal curPoint;
     /**
      * 交易量
      */
@@ -55,8 +46,19 @@ public class InnerMarketDomain {
      */
     private BigDecimal upDown;
     /**
+     * 涨幅
+     */
+    private BigDecimal rose;
+    /**
      * 振幅
      */
     private BigDecimal amplitude;
+
+    /**
+     * 当前时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private String curTime;
+
 
 }

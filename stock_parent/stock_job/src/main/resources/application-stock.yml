@@ -9,8 +9,8 @@ stock:
     - int_hangseng # 恒生
     - int_nikkei # 日经指数
     - b_FSSTI # 新加坡
-  market_url: http://api.mairui.club/zs/sssj/
-  stock_code_url: http://api.mairui.club/hslt/list/
-  stock_url: http://api.mairui.club/hsrl/ssjy/
-  licence: 96bb56268f791a1a63
-#  block_url:
+
+  inner_market_url: http://hq.sinajs.cn/list= # 后面填股市代码，用逗号分割，如http://hq.sinajs.cn/list=sh000001,sz399001
+  outer_market_url: http://hq.sinajs.cn/list=
+  a_stock_url: http://hq.sinajs.cn/list=
+  inner_block_url: https://vip.stock.finance.sina.com.cn/q/view/newSinaHy.php
