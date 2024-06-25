@@ -79,7 +79,7 @@
        #{smi.tradeAmount,jdbcType=BIGINT},#{smi.tradeVolume,jdbcType=BIGINT}
       )
     </foreach>
-    # 如果插入的数据已经存在，使用这段代码防止mysql报重复entry的错误。改代码的意思是如果重复则更新这些值而不是插入
+    # 如果插入的数据已经存在，使用这段代码防止mysql报重复entry的错误。该代码的意思是如果重复则更新这些值而不是插入
     ON DUPLICATE KEY UPDATE
       pre_close_point = VALUES(pre_close_point),
       open_point = VALUES(open_point),

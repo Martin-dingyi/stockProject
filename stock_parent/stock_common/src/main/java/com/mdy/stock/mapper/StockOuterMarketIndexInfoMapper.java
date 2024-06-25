@@ -30,5 +30,5 @@ public interface StockOuterMarketIndexInfoMapper {
      * 批量导入国内大盘指数信息
      * @param stockMarketIndexInfos 大盘指数信息列表
      */
-    void insertStockInfosPatch(@Param("stockMarketIndexInfos") List<StockMarketIndexInfo> stockMarketIndexInfos);
+    int insertStockInfosPatch(@Param("stockMarketIndexInfos") List<StockMarketIndexInfo> stockMarketIndexInfos);
 }

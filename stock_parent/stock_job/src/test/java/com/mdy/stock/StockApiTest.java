@@ -1,8 +1,5 @@
 package com.mdy.stock;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.mdy.stock.POJO.InnerMarketDO;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockTimerTaskService;
 import org.junit.jupiter.api.Test;
@@ -12,10 +9,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +31,7 @@ public class StockApiTest {
 
     @Test
     public void test2() {
-        stockTimerTaskService.getInnerMarketInfo();
+        stockTimerTaskService.getAndInsectInnerMarketInfo();
     }
 
     @Test
