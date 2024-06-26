@@ -64,22 +64,24 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
      */
     @Override
     public void getAndInsertInnerMarketInfo() {
+        // stockMarketIndexInfos用于存储读取到的国内大盘数据
+        List<StockMarketIndexInfo> stockMarketIndexInfos = new ArrayList<>();
+        // 从配置文件中读取大盘id数据
         List<String> marketCodeList = stockInfoConfig.getInnerMarketId();
-        // 组装请求对象
+
+
+
+        // 组装请求对象。这样设置是为了绕开屏蔽
         HttpHeaders headers = new HttpHeaders();
-        // 请求头设置，绕开屏蔽
         headers.add("Referer", "https://finance.sina.com.cn/stock/");
         headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
         HttpEntity<Object> entity = new HttpEntity<>(headers);
 
-        // stockMarketIndexInfos用于存储读取到的国内大盘数据
-        List<StockMarketIndexInfo> stockMarketIndexInfos = new ArrayList<>();
 
+
+        // 配置正则表达式
+        Pattern pattern = Pattern.compile("var hq_str_(.+)=\"(.+)\"");
         // 解析字符串，将数据载入StockMarketIndexInfo对象，最后将该对象添加进列表中
-        String reg = "var hq_str_(.+)=\"(.+)\"";
-        // 编译表达式,获取编译对象
-        Pattern pattern = Pattern.compile(reg);
-
         for (String code : marketCodeList) {
             // 组装请求大盘数据的url
             String url = stockInfoConfig.getInnerMarketUrl() + code;

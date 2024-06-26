@@ -32,3 +32,8 @@ mybatis:
 pagehelper:
   helper-dialect: mysql #指定分页数据库类型（方言）
   reasonable: true #合理查询超过最大页，则查询最后一页
+
+# 配置日志
+logging:
+  level:
+    com.mdy.stock.mapper: debug

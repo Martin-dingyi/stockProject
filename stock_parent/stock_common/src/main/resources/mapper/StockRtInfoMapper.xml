@@ -263,6 +263,15 @@
             #{si.tradeAmount,jdbcType=BIGINT},#{si.tradeVolume,jdbcType=DECIMAL},#{si.curTime,jdbcType=TIMESTAMP}
           )
         </foreach>
+    # 如果插入的数据已经存在，使用这段代码防止mysql报重复entry的错误。该代码的意思是如果重复则更新这些值而不是插入
+    ON DUPLICATE KEY UPDATE
+      pre_close_price = VALUES(pre_close_price),
+      open_price = VALUES(open_price),
+      cur_price = VALUES(cur_price),
+      min_price = VALUES(min_price),
+      max_price = VALUES(max_price),
+      trade_amount = VALUES(trade_amount),
+      trade_volume = VALUES(trade_volume);
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.mdy.stock.pojo.entity.StockRtInfo">
