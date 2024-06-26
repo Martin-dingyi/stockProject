@@ -1,4 +1,4 @@
-package com.mdy.stock.POJO;
+package com.mdy.stock.POJO.DO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

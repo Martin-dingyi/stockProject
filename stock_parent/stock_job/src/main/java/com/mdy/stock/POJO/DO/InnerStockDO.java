@@ -1,12 +1,10 @@
-package com.mdy.stock.POJO;
+package com.mdy.stock.POJO.DO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @author mdy

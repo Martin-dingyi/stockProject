@@ -1,5 +1,7 @@
 package com.mdy.stock;
 
+import com.mdy.stock.mapper.StockRtInfoMapper;
+import com.mdy.stock.pojo.entity.StockRtInfo;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockTimerTaskService;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,23 +39,22 @@ public class StockApiTest {
     }
 
     @Test
-    public void test3() {
+    public void test3() throws InterruptedException {
         stockTimerTaskService.getAndInsertStockInfo();
+        Thread.sleep(3000);
     }
 
     @Test
     public void sinaStockApiTest() {
-        // 1.定义采集的url接口
-        String url = "http://vip.stock.finance.sina.com.cn/quotes_service/api/json_v2.php/Market_Center.getHQNodeData";
-        // 2.调用restTemplate采集数据
-        // 组装请求头
+        // 定义采集的url接口
+        String url = "http://hq.sinajs.cn/list=sh000001,sz399001";
+        // 调用restTemplate采集数据
+        // 组装请求对象
         HttpHeaders headers = new HttpHeaders();
-        // 必须填写，否则数据采集不到
         headers.add("Referer", "https://finance.sina.com.cn/stock/");
         headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
-        // 2 组装请求对象
         HttpEntity<Object> entity = new HttpEntity<>(headers);
-        // 2 resetTemplate发起请求
+        // resetTemplate发起请求
         String resString = restTemplate.postForObject(url, entity, String.class);
         System.out.println(resString);
     }
@@ -73,4 +76,22 @@ public class StockApiTest {
     }
 
 
+    @Autowired
+    StockRtInfoMapper stockRtInfoMapper;
+    @Test
+    public void stringJoinTest() {
+//        List<String> marketCodeList = stockInfoConfig.getInnerMarketId();
+//        String url = stockInfoConfig.getInnerMarketUrl() + String.join(",", marketCodeList);
+//        System.out.println(url);
+
+        List<StockRtInfo> stockRtInfos = new ArrayList<>();
+        // 获取个股编码列表
+        List<String> stockCodeList = stockRtInfoMapper.findStockCodeList();
+        // 处理个股编码
+        for (int i = 0; i < stockCodeList.size(); i++) {
+            String code = (stockCodeList.get(i).startsWith("00") ? "sz" : "sh") + stockCodeList.get(i);
+            stockCodeList.set(i, code);
+        }
+        System.out.println(stockCodeList);
+    }
 }
