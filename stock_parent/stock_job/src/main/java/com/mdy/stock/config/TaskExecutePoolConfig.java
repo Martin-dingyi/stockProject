@@ -58,7 +58,7 @@ public class TaskExecutePoolConfig {
 //     * @return RejectedExecutionHandler
 //     */
 //    @Bean
-//    public RejectedExecutionHandler rejectedExecutionHandler(){
+//    public RejectedExecutionHandler rejectedExecutionHandler() {
 //        RejectedExecutionHandler errorHandler = new RejectedExecutionHandler() {
 //            @Override
 //            public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
