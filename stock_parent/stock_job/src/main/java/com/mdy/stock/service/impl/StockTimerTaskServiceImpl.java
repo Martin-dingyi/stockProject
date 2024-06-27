@@ -110,7 +110,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
                         .minPoint(new BigDecimal(info.get(5)))
                         .tradeAmount(Long.valueOf(info.get(8)))
                         .tradeVolume(new BigDecimal(info.get(9)))
-                        .curTime(DateTime.parse(info.get(30) + " " + info.get(31), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate())
+                        .curTime(DateTime.parse(info.get(30) + " " + (info.get(31).substring(0, info.get(31).length() - 2) + "00"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate())
                         .build();
                 stockMarketIndexInfos.add(marketInfo);
             } else {
@@ -177,7 +177,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
                                 .minPrice(new BigDecimal(info.get(5)))
                                 .tradeAmount(Long.valueOf(info.get(8)))
                                 .tradeVolume(new BigDecimal(info.get(9)))
-                                .curTime(DateTime.parse(info.get(30) + " " + info.get(31), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate())
+                                .curTime(DateTime.parse(info.get(30) + " " + (info.get(31).substring(0, info.get(31).length() - 2) + "00"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate())
                                 .build();
                         stockRtInfos.add(stockRtInfo);
                     } else {
