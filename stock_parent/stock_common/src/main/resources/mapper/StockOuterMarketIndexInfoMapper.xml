@@ -27,7 +27,22 @@
         where  id = #{id,jdbcType=BIGINT} 
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="findOuterMarketIndexInfo" resultType="com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo">
+    select
+      market_name as name,
+      updown as upDown,
+      rose,
+      cur_point as curPoint,
+      cur_time as curTime
+    from
+      stock_outer_market_index_info
+    where cur_time = #{date}
+    order by cur_time desc, cur_point desc
+    limit 4;
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_outer_market_index_info
         where  id = #{id,jdbcType=BIGINT} 
     </delete>

@@ -3,6 +3,8 @@ package com.mdy.stock.pojo.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -24,7 +26,7 @@ public class StockOuterMarketIndexInfo implements Serializable {
     /**
      * 大盘名称
      */
-    private String marketName;
+    private String name;
 
     /**
      * 大盘当前点
@@ -34,7 +36,7 @@ public class StockOuterMarketIndexInfo implements Serializable {
     /**
      * 大盘涨跌值
      */
-    private BigDecimal updown;
+    private BigDecimal upDown;
 
     /**
      * 大盘涨幅
@@ -44,6 +46,7 @@ public class StockOuterMarketIndexInfo implements Serializable {
     /**
      * 当前时间
      */
+    @JsonFormat(pattern = "yyyyMMdd")
     private Date curTime;
 
     private static final long serialVersionUID = 1L;

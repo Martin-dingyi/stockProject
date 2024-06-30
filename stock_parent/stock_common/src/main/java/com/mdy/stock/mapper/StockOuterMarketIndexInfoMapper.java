@@ -4,6 +4,7 @@ import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
 import com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,4 +32,10 @@ public interface StockOuterMarketIndexInfoMapper {
      * @param stockMarketIndexInfos 大盘指数信息列表
      */
     int insertStockInfosPatch(@Param("stockMarketIndexInfos") List<StockMarketIndexInfo> stockMarketIndexInfos);
+
+    /**
+     * 获取四条国外大盘数据，按照时间和大盘点数降序排序。
+     * @return R
+     */
+    List<StockOuterMarketIndexInfo> findOuterMarketIndexInfo(@Param("date") Date lastTime);
 }
