@@ -21,7 +21,7 @@ public class StockOuterMarketIndexInfo implements Serializable {
     /**
      * 大盘编码
      */
-    private String marketCode;
+    private String code;
 
     /**
      * 大盘名称

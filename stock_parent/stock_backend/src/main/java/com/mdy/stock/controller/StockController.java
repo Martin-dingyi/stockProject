@@ -4,10 +4,7 @@ import com.mdy.stock.pojo.domain.*;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +29,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/index/all")
-    public R<List<InnerMarketDomain>> getInnerMarketData() {
+    public R<List<InnerMarketBO>> getInnerMarketData() {
         return stockService.getInnerIndexAll();
     }
 
@@ -41,7 +38,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/sector/all")
-    public R<List<InnerSectorDomain>> getSectorData() {
+    public R<List<InnerSectorBO>> getSectorData() {
         return stockService.getInnerSectorAll();
     }
 
@@ -52,7 +49,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/stock/all")
-    public R<PageResult<StockUpdownDomain>> getStockPageInfo(@RequestParam(name = "page", required = false,
+    public R<PageResult<StockUpDownBO>> getStockPageInfo(@RequestParam(name = "page", required = false,
             defaultValue = "1") Integer page, @RequestParam(name = "pageSize", required = false, defaultValue = "20") Integer pageSize) {
         return stockService.getStockUpDownPageInfos(page, pageSize);
     }
@@ -62,7 +59,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/stock/increase")
-    public R<List<StockUpdownDomain>> getStockIncrease() {
+    public R<List<StockUpDownBO>> getStockIncrease() {
         return stockService.getUpDownIncreaseInfo();
     }
 
@@ -113,7 +110,7 @@ public class StockController {
      * @return R
      */
     @GetMapping("/stock/screen/time-sharing")
-    public R<List<SingleStock>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
+    public R<List<InnerStockBO>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
         return stockService.getStockMinuteDataByCode(code);
     }
 
@@ -126,4 +123,25 @@ public class StockController {
     public R<List<StockDayBO>> getStockDayDataByCode(@RequestParam(name = "code") String code) {
         return stockService.getStockDayDataByCode(code);
     }
+
+    /**
+     * 根据编码模糊查询相关股票
+     * @param code 模糊code
+     * @return 返回查询到的股票的code和name
+     */
+    @GetMapping("/stock/search")
+    public R<List<InnerMarketBO>> getRelatedStockInfo (@RequestParam("searchStr") String code) {
+        return stockService.getRelatedStockInfo(code);
+    }
+
+    /**
+     * 根据编码获取个股商业信息
+     * @param code 编码
+     * @return R
+     */
+    @GetMapping("/stock/describe")
+    public R<StockBusinessBO> getStockBusinessInfoByCode (@RequestParam(name = "code") String code) {
+        return stockService.getStockBusinessInfoByCode(code);
+    }
+
 }

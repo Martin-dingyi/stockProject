@@ -33,7 +33,7 @@
     </select>
 
 <!--  查询国内大盘数据-->
-  <select id="getInnerMarketInfo" resultType="com.mdy.stock.pojo.domain.InnerMarketDomain">
+  <select id="getInnerMarketInfo" resultType="com.mdy.stock.pojo.domain.InnerMarketBO">
     SELECT
       smi.market_code AS code,
       smi.market_name AS name,
@@ -56,7 +56,7 @@
   </select>
 
 <!--  查询板块信息-->
-  <select id="getInnerMarketSectorInfo" resultType="com.mdy.stock.pojo.domain.InnerSectorDomain">
+  <select id="getInnerMarketSectorInfo" resultType="com.mdy.stock.pojo.domain.InnerSectorBO">
     SELECT
       label AS CODE,
       block_name AS NAME,

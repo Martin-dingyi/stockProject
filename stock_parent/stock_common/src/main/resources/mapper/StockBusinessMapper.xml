@@ -25,7 +25,18 @@
         where  stock_code = #{stockCode,jdbcType=CHAR} 
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="findStockBusinessInfoByCode" resultType="com.mdy.stock.pojo.domain.StockBusinessBO">
+    select
+      stock_code as code,
+      stock_name as name,
+      block_name as trade,
+      business
+    from
+      stock_business
+    where stock_code = #{code}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_business
         where  stock_code = #{stockCode,jdbcType=CHAR} 
     </delete>

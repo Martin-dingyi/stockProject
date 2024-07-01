@@ -1,6 +1,8 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.StockBusinessBO;
 import com.mdy.stock.pojo.entity.StockBusiness;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author martin
@@ -22,4 +24,11 @@ public interface StockBusinessMapper {
 
     int updateByPrimaryKey(StockBusiness record);
 
+
+    /**
+     * 根据编码获取个股商业信息
+     * @param code 编码
+     * @return R
+     */
+    StockBusinessBO findStockBusinessInfoByCode(@Param("code") String code);
 }

@@ -19,13 +19,13 @@ public interface StockService {
      * 获取所有国内大盘指数数据
      * @return
      */
-    R<List<InnerMarketDomain>> getInnerIndexAll();
+    R<List<InnerMarketBO>> getInnerIndexAll();
 
     /**
      * 获取所有国内板块数据
      * @return
      */
-    R<List<InnerSectorDomain>> getInnerSectorAll();
+    R<List<InnerSectorBO>> getInnerSectorAll();
 
     /**
      * 根据分页数据获取涨幅榜信息，查询最新的数据。
@@ -33,13 +33,13 @@ public interface StockService {
      * @param pageSize 页大小
      * @return
      */
-    R<PageResult<StockUpdownDomain>> getStockUpDownPageInfos(Integer page, Integer pageSize);
+    R<PageResult<StockUpDownBO>> getStockUpDownPageInfos(Integer page, Integer pageSize);
 
     /**
      * 获取最近时间内的前四条涨幅榜数据，根据涨幅排序
      * @return
      */
-    R<List<StockUpdownDomain>> getUpDownIncreaseInfo();
+    R<List<StockUpDownBO>> getUpDownIncreaseInfo();
 
     /**
      * 获得股票涨跌停数据计数统计
@@ -72,7 +72,7 @@ public interface StockService {
      * @param code 股票编码
      * @return R
      */
-    R<List<SingleStock>> getStockMinuteDataByCode(String code);
+    R<List<InnerStockBO>> getStockMinuteDataByCode(String code);
 
     /**
      * 根据编码获取单一股票最近几天的日k线数据
@@ -80,4 +80,19 @@ public interface StockService {
      * @return R
      */
     R<List<StockDayBO>> getStockDayDataByCode(String code);
+
+
+    /**
+     * 根据编码模糊查询相关股票
+     * @param code 模糊code
+     * @return 返回查询到的股票的code和name
+     */
+    R<List<InnerMarketBO>> getRelatedStockInfo(String code);
+
+    /**
+     * 根据编码获取个股商业信息
+     * @param code 编码
+     * @return R
+     */
+    R<StockBusinessBO> getStockBusinessInfoByCode(String code);
 }

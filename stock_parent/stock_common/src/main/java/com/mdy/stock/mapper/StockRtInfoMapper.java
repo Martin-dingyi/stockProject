@@ -1,8 +1,9 @@
 package com.mdy.stock.mapper;
 
-import com.mdy.stock.pojo.domain.SingleStock;
+import com.mdy.stock.pojo.domain.InnerMarketBO;
+import com.mdy.stock.pojo.domain.InnerStockBO;
 import com.mdy.stock.pojo.domain.StockDayBO;
-import com.mdy.stock.pojo.domain.StockUpdownDomain;
+import com.mdy.stock.pojo.domain.StockUpDownBO;
 import com.mdy.stock.pojo.entity.StockRtInfo;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
@@ -36,14 +37,14 @@ public interface StockRtInfoMapper {
      * @param lastTime 最近交易时间
      * @return
      */
-    List<StockUpdownDomain> findAll(@Param("curTime") Date lastTime);
+    List<StockUpDownBO> findAll(@Param("curTime") Date lastTime);
 
     /**
      * 查询涨幅榜前四条数据，根据涨幅排序
      * @param lastTime 最近交易时间
      * @return
      */
-    List<StockUpdownDomain> findFourUpDownData(@Param("curTime") Date lastTime);
+    List<StockUpDownBO> findFourUpDownData(@Param("curTime") Date lastTime);
 
     /**
      * 查询涨跌停股票的时间和数量
@@ -68,8 +69,8 @@ public interface StockRtInfoMapper {
      * @param code 股票编码
      * @return R
      */
-    List<SingleStock> findSingleStockMinuteDataByCode(@Param("openTime") Date openTime,
-                                                      @Param("endTime") Date lastTime, @Param("code") String code);
+    List<InnerStockBO> findSingleStockMinuteDataByCode(@Param("openTime") Date openTime,
+                                                       @Param("endTime") Date lastTime, @Param("code") String code);
     /**
      * 根据编码获取单一股票最近几天的日k线数据
      * @param code 股票编码
@@ -90,4 +91,11 @@ public interface StockRtInfoMapper {
      * @return 股票编码列表
      */
     List<String> findStockCodeList();
+
+    /**
+     * 根据编码模糊查询相关股票
+     * @param code 模糊code
+     * @return 返回查询到的股票的code和name
+     */
+    List<InnerMarketBO> findStockByCode(@Param("code") String code);
 }

@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mdy.stock.mapper.StockBusinessMapper;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
 import com.mdy.stock.mapper.StockRtInfoMapper;
 import com.mdy.stock.pojo.domain.*;
@@ -34,13 +35,16 @@ import java.util.*;
 @Slf4j
 public class StockServiceImpl implements StockService {
     @Resource
-    StockInfoConfig stockInfoConfig;
+    private StockInfoConfig stockInfoConfig;
 
     @Resource
-    StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
+    private StockMarketIndexInfoMapper stockMarketIndexInfoMapper;
 
     @Resource
     private StockRtInfoMapper stockRtInfoMapper;
+
+    @Resource
+    private StockBusinessMapper stockBusinessMapper;
 
     @Resource
     private Cache<String, R> caffeineCache;
@@ -50,15 +54,15 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<InnerMarketDomain>> getInnerIndexAll() {
-        R<List<InnerMarketDomain>> data = caffeineCache.get("marketInfo", key -> {
+    public R<List<InnerMarketBO>> getInnerIndexAll() {
+        R<List<InnerMarketBO>> data = caffeineCache.get("marketInfo", key -> {
             // 如果缓存不存在，向数据库查询。
             // 1.获取最近交易时间
             Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now().minusMinutes(1)).toDate();
             // 2.获取所有国内大盘编码
             List<String> innerMarketCodes = stockInfoConfig.getInnerMarketId();
             // 3.根据最近时间和大盘编码查询数据库
-            List<InnerMarketDomain> infos = stockMarketIndexInfoMapper.getInnerMarketInfo(lastTime, innerMarketCodes);
+            List<InnerMarketBO> infos = stockMarketIndexInfoMapper.getInnerMarketInfo(lastTime, innerMarketCodes);
             return R.ok(infos);
         });
         return data;
@@ -69,11 +73,11 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<InnerSectorDomain>> getInnerSectorAll() {
+    public R<List<InnerSectorBO>> getInnerSectorAll() {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now().minusMinutes(1)).toDate();
         // 2.根据最新交易时间查询十条数据
-        List<InnerSectorDomain> innerMarketSectorInfos = stockMarketIndexInfoMapper.getInnerMarketSectorInfo(lastTime);
+        List<InnerSectorBO> innerMarketSectorInfos = stockMarketIndexInfoMapper.getInnerMarketSectorInfo(lastTime);
         // 3.若无数据，则报错
         if (CollectionUtils.isEmpty(innerMarketSectorInfos)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA);
@@ -88,18 +92,18 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<PageResult<StockUpdownDomain>> getStockUpDownPageInfos(Integer page, Integer pageSize) {
+    public R<PageResult<StockUpDownBO>> getStockUpDownPageInfos(Integer page, Integer pageSize) {
         // 1.设置pageHelper分页参数
         PageHelper.startPage(page, pageSize);
         // 2.根据最新交易时间查询涨幅榜数据
         Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now().minusMinutes(1)).toDate();
-        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findAll(lastTime);
+        List<StockUpDownBO> stockUpDownInfos = stockRtInfoMapper.findAll(lastTime);
         if (CollectionUtils.isEmpty(stockUpDownInfos)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA);
         }
         // 3.将数据加载到pageInfo中，再通过pageInfo生成pageResult
-        PageInfo<StockUpdownDomain> pageInfo = new PageInfo<>(stockUpDownInfos);
-        PageResult<StockUpdownDomain> pageResult = new PageResult<>(pageInfo);
+        PageInfo<StockUpDownBO> pageInfo = new PageInfo<>(stockUpDownInfos);
+        PageResult<StockUpDownBO> pageResult = new PageResult<>(pageInfo);
         return R.ok(pageResult);
     }
 
@@ -108,10 +112,10 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<StockUpdownDomain>> getUpDownIncreaseInfo() {
+    public R<List<StockUpDownBO>> getUpDownIncreaseInfo() {
         // 1.获取最近交易时间
         Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now().minusMinutes(1)).toDate();
-        List<StockUpdownDomain> stockUpDownInfos = stockRtInfoMapper.findFourUpDownData(lastTime);
+        List<StockUpDownBO> stockUpDownInfos = stockRtInfoMapper.findFourUpDownData(lastTime);
         if (CollectionUtils.isEmpty(stockUpDownInfos)) {
             return R.error(ResponseCode.NO_RESPONSE_DATA);
         }
@@ -146,7 +150,7 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public void downloadStockUpDown(Integer page, Integer pageSize, HttpServletResponse response) {
-        List<StockUpdownDomain> stockUpDownInfos = this.getStockUpDownPageInfos(page, pageSize).getData().getRows();
+        List<StockUpDownBO> stockUpDownInfos = this.getStockUpDownPageInfos(page, pageSize).getData().getRows();
         // 设置响应的文件格式和编码格式
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
@@ -155,7 +159,7 @@ public class StockServiceImpl implements StockService {
             // 设置下载的默认的文件名
             String fileName = URLEncoder.encode("股票涨跌数据", "UTF-8").replaceAll("\\+", "%20");
             response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-            EasyExcel.write(response.getOutputStream(), StockUpdownDomain.class).sheet("股票涨跌信息").doWrite(stockUpDownInfos);
+            EasyExcel.write(response.getOutputStream(), StockUpDownBO.class).sheet("股票涨跌信息").doWrite(stockUpDownInfos);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -232,8 +236,8 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<SingleStock>> getStockMinuteDataByCode(String code) {
-        R<List<SingleStock>> data = caffeineCache.get("stockInfo", key -> {
+    public R<List<InnerStockBO>> getStockMinuteDataByCode(String code) {
+        R<List<InnerStockBO>> data = caffeineCache.get("stockInfo", key -> {
             // 如果缓存不存在，向数据库查询。
             // 1.获取最近有效交易时间
             DateTime lastTimeOfDateTime = DateTimeUtil.getLastValidDate(DateTime.now().minusMinutes(1));
@@ -241,7 +245,7 @@ public class StockServiceImpl implements StockService {
             // 2.获取最近有效时间下的开盘时间
             Date openTime = DateTimeUtil.getOpenDate(lastTimeOfDateTime).toDate();
             // 3.根据股票编码、开盘时间和最后时间查询单一股票分时数据
-            List<SingleStock> minuteStockList = stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
+            List<InnerStockBO> minuteStockList = stockRtInfoMapper.findSingleStockMinuteDataByCode(openTime, lastTime, code);
             return R.ok(minuteStockList);
         });
         return data;
@@ -266,6 +270,26 @@ public class StockServiceImpl implements StockService {
             return R.ok(stockDayBOList);
         });
         return data;
+    }
+
+    /**
+     * 根据编码模糊查询相关股票
+     * @param code 模糊code
+     * @return 返回查询到的股票的code和name
+     */
+    @Override
+    public R<List<InnerMarketBO>> getRelatedStockInfo(String code) {
+        return R.ok(stockRtInfoMapper.findStockByCode(code));
+    }
+
+    /**
+     * 根据编码获取个股商业信息
+     * @param code 编码
+     * @return R
+     */
+    @Override
+    public R<StockBusinessBO> getStockBusinessInfoByCode(String code) {
+        return R.ok(stockBusinessMapper.findStockBusinessInfoByCode(code));
     }
 
 }

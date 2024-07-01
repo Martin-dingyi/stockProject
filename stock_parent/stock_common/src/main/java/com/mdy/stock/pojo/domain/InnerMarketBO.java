@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 
 @Data
-public class InnerMarketDomain {
+public class InnerMarketBO {
     /**
      * 大盘编码
      */

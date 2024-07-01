@@ -1,14 +1,11 @@
 package com.mdy.stock;
 
-import com.mdy.stock.pojo.domain.InnerMarketDomain;
+import com.mdy.stock.pojo.domain.InnerMarketBO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author mdy
@@ -34,7 +31,7 @@ public class RestTemplateTest {
     @Test
     public void DomainTest() {
         String url = "http://localhost:8090/api/quot/index/all";
-        InnerMarketDomain innerMarketInfo = restTemplate.getForObject(url, InnerMarketDomain.class);
+        InnerMarketBO innerMarketInfo = restTemplate.getForObject(url, InnerMarketBO.class);
         System.out.println(innerMarketInfo);
     }
 }

@@ -1,7 +1,7 @@
 package com.mdy.stock.mapper;
 
-import com.mdy.stock.pojo.domain.InnerMarketDomain;
-import com.mdy.stock.pojo.domain.InnerSectorDomain;
+import com.mdy.stock.pojo.domain.InnerMarketBO;
+import com.mdy.stock.pojo.domain.InnerSectorBO;
 import com.mdy.stock.pojo.entity.StockMarketIndexInfo;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +23,7 @@ public interface StockMarketIndexInfoMapper {
      * @param innerMarketCodes
      * @return
      */
-    List<InnerMarketDomain> getInnerMarketInfo(@Param("cur_time") Date lastTime, @Param("marketCodes") List<String> innerMarketCodes);
+    List<InnerMarketBO> getInnerMarketInfo(@Param("cur_time") Date lastTime, @Param("marketCodes") List<String> innerMarketCodes);
 
     int deleteByPrimaryKey(Long id);
 
@@ -37,7 +37,7 @@ public interface StockMarketIndexInfoMapper {
 
     int updateByPrimaryKey(StockMarketIndexInfo record);
 
-    List<InnerSectorDomain> getInnerMarketSectorInfo(@Param("cur_time") Date lastTime);
+    List<InnerSectorBO> getInnerMarketSectorInfo(@Param("cur_time") Date lastTime);
 
     /**
      * 获取当天沪深两市的每分钟总交易量

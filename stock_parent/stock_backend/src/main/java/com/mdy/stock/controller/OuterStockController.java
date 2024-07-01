@@ -3,10 +3,7 @@ package com.mdy.stock.controller;
 import com.mdy.stock.pojo.entity.StockOuterMarketIndexInfo;
 import com.mdy.stock.service.StockOuterMarketService;
 import com.mdy.stock.viewObject.response.R;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,4 +29,6 @@ public class OuterStockController {
     public R<List<StockOuterMarketIndexInfo>> getOuterMarketIndexInfo() {
         return stockOuterMarketService.getOuterMarketIndexInfo();
     }
+
+
 }
