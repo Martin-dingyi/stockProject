@@ -98,4 +98,11 @@ public interface StockRtInfoMapper {
      * @return 返回查询到的股票的code和name
      */
     List<InnerMarketBO> findStockByCode(@Param("code") String code);
+
+    /**
+     * 根据股票编码获取股票周k线数据
+     * @param code 编码
+     * @return R
+     */
+    List<StockRtInfo> findStockWeeklyByCode(@Param("code") String code, @Param("validDates") List<Date> validDates);
 }

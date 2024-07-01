@@ -211,10 +211,27 @@
       stock_code regexp #{code}
   </select>
 
+  <select id="findStockWeeklyByCode" resultType="com.mdy.stock.pojo.entity.StockRtInfo">
+    select
+        open_price as openPrice,
+        max_price as maxPrice,
+        min_price as minPrice,
+        cur_price as curPrice,
+        cur_time as curTime
+    from
+        stock_rt_info
+    where
+        stock_code = #{code} AND
+        cur_time in
+        <foreach collection="validDates" separator="," item="date" open="(" close=")">
+          #{date}
+        </foreach>
+  </select>
+
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info
-        where  id = #{id,jdbcType=BIGINT} 
+        where  id = #{id,jdbcType=BIGINT}
     </delete>
 
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.mdy.stock.pojo.entity.StockRtInfo" useGeneratedKeys="true">

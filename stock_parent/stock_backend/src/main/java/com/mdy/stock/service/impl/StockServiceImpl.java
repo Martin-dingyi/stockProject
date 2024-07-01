@@ -8,6 +8,7 @@ import com.mdy.stock.mapper.StockBusinessMapper;
 import com.mdy.stock.mapper.StockMarketIndexInfoMapper;
 import com.mdy.stock.mapper.StockRtInfoMapper;
 import com.mdy.stock.pojo.domain.*;
+import com.mdy.stock.pojo.entity.StockRtInfo;
 import com.mdy.stock.pojo.valueObject.StockInfoConfig;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.utils.DateTimeUtil;
@@ -23,6 +24,8 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -290,6 +293,67 @@ public class StockServiceImpl implements StockService {
     @Override
     public R<StockBusinessBO> getStockBusinessInfoByCode(String code) {
         return R.ok(stockBusinessMapper.findStockBusinessInfoByCode(code));
+    }
+
+    /**
+     * 根据股票编码获取股票周k线数据
+     *
+     * @param code 编码
+     * @return R
+     */
+    @Override
+    public R<List<StockWeeklyBO>> getStockWeeklyByCode(String code) {
+        List<StockWeeklyBO> stockWeeklyList = new ArrayList<>();
+
+        DateTime lastTime = DateTimeUtil.getLastValidDate(DateTime.now());
+        // Todo: mock数据
+        lastTime = DateTime.parse("2022-01-07 14:46:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+
+        for (int i = 0; i < 30; i++) {
+            // 计算获得周一到lastTime之间的所有收盘时间日期
+            int validDays = lastTime.getDayOfWeek();
+            List<Date> validDates = new ArrayList<>();
+            validDates.add(lastTime.toDate());
+            for (int j = 1; j < validDays; j++) {
+                validDates.add(DateTimeUtil.getCloseDate(lastTime.minusDays(j)).toDate());
+            }
+            // 根据这几个收盘时间和lastTime对应的数据
+            List<StockRtInfo> stockRtInfoList = stockRtInfoMapper.findStockWeeklyByCode(code, validDates);
+            if (CollectionUtils.isEmpty(stockRtInfoList)) {
+                continue;
+            }
+
+            // 根据查询到的数据计算响应数据
+            BigDecimal maxPrice = stockRtInfoList.get(0).getMaxPrice();
+            BigDecimal minPrice = stockRtInfoList.get(0).getMinPrice();
+            BigDecimal avgPrice = BigDecimal.valueOf(0);
+            BigDecimal openPrice = stockRtInfoList.get(0).getOpenPrice();
+            BigDecimal closePrice = stockRtInfoList.get(0).getCurPrice();
+            Date mxDate = lastTime.toDate();
+            for (StockRtInfo stockRtInfo : stockRtInfoList) {
+                maxPrice = maxPrice.max(stockRtInfo.getMaxPrice());
+                minPrice = minPrice.min(stockRtInfo.getMinPrice());
+                avgPrice = avgPrice.add(stockRtInfo.getCurPrice());
+            }
+            avgPrice = avgPrice.divide(new BigDecimal(stockRtInfoList.size()), 2, RoundingMode.HALF_UP);
+
+            // 将计算出的值添加进BO中
+            StockWeeklyBO stockWeeklyBO = StockWeeklyBO.builder()
+                    .stockCode(code)
+                    .maxPrice(maxPrice)
+                    .minPrice(minPrice)
+                    .avgPrice(avgPrice)
+                    .openPrice(openPrice)
+                    .closePrice(closePrice)
+                    .mxTime(mxDate)
+                    .build();
+            stockWeeklyList.add(stockWeeklyBO);
+
+            // 继续查上一个星期的数据，总共查30次
+            lastTime = DateTimeUtil.getCloseDate(lastTime.minusDays(validDays + 2));
+        }
+
+        return R.ok(stockWeeklyList);
     }
 
 }

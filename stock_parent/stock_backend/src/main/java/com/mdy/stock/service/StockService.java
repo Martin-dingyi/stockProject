@@ -95,4 +95,12 @@ public interface StockService {
      * @return R
      */
     R<StockBusinessBO> getStockBusinessInfoByCode(String code);
+
+    /**
+     * 根据股票编码获取股票周k线数据
+     *
+     * @param code 编码
+     * @return R
+     */
+    R<List<StockWeeklyBO>> getStockWeeklyByCode(String code);
 }

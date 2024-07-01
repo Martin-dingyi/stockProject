@@ -144,4 +144,13 @@ public class StockController {
         return stockService.getStockBusinessInfoByCode(code);
     }
 
+    /**
+     * 根据股票编码获取股票周k线数据
+     * @param code 编码
+     * @return R
+     */
+    @GetMapping("/stock/screen/weekkline")
+    public R<List<StockWeeklyBO>> getStockWeeklyByCode(@RequestParam(name = "code") String code) {
+        return stockService.getStockWeeklyByCode(code);
+    }
 }
