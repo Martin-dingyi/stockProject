@@ -9,7 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class ReqLoginVo {
+public class ReqLoginVO {
     /**
      * 用戶名
      */

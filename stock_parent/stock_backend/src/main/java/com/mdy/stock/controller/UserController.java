@@ -1,9 +1,12 @@
 package com.mdy.stock.controller;
 
+import com.mdy.stock.pojo.domain.RoleBO;
+import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.impl.UserServiceImpl;
+import com.mdy.stock.viewObject.request.ReqListRoleVO;
 import com.mdy.stock.viewObject.request.ReqListUserVO;
-import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.request.ReqLoginVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
@@ -47,7 +50,7 @@ public class UserController {
      * @return 登录信息
      */
     @PostMapping("/login")
-    private R<RespLoginVo> login(@RequestBody ReqLoginVo reqLoginVo) {
+    private R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
         return userService.login(reqLoginVo);
 
     }
@@ -83,4 +86,15 @@ public class UserController {
         }
         return R.error("操作失败");
     }
+
+    /**
+     * 根据分页信息查询用户角色信息
+     * @return R
+     */
+    @PostMapping("/roles")
+    private R<PageResult<SysRole>>  listSysRoles(@RequestBody ReqListRoleVO reqListRoleVO) {
+        return userService.listSysRoles(reqListRoleVO);
+    }
+
+    
 }

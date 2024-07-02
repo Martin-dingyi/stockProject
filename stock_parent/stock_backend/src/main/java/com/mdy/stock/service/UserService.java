@@ -1,12 +1,15 @@
 package com.mdy.stock.service;
 
+import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
+import com.mdy.stock.viewObject.request.ReqListRoleVO;
 import com.mdy.stock.viewObject.request.ReqListUserVO;
-import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.request.ReqLoginVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +31,7 @@ public interface UserService {
      * @param reqLoginVo 保持登录信息的对象
      * @return
      */
-    R<RespLoginVo> login(ReqLoginVo reqLoginVo);
+    R<RespLoginVo> login(ReqLoginVO reqLoginVo);
 
     /**
      * 获取验证码
@@ -50,4 +53,10 @@ public interface UserService {
      * @return 操作成功与否信息
      */
     boolean insertUser(SysUser user);
+
+    /**
+     * 根据分页信息查询用户角色信息
+     * @return R
+     */
+    R<PageResult<SysRole>> listSysRoles(ReqListRoleVO reqListRoleVO);
 }

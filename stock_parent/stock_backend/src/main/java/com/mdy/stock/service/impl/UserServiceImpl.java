@@ -4,12 +4,15 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mdy.stock.mapper.SysRoleMapper;
 import com.mdy.stock.mapper.SysUserMapper;
+import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
 import com.mdy.stock.utils.IdWorker;
+import com.mdy.stock.viewObject.request.ReqListRoleVO;
 import com.mdy.stock.viewObject.request.ReqListUserVO;
-import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.request.ReqLoginVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
@@ -34,6 +37,9 @@ public class UserServiceImpl implements UserService {
     private SysUserMapper sysUserMapper;
 
     @Resource
+    private SysRoleMapper sysRoleMapper;
+
+    @Resource
     private PasswordEncoder passwordEncoder;
 
     @Resource
@@ -53,7 +59,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public R<RespLoginVo> login(ReqLoginVo reqLoginVo) {
+    public R<RespLoginVo> login(ReqLoginVO reqLoginVo) {
         if (reqLoginVo == null || StringUtils.isBlank(reqLoginVo.getUsername())
                 || StringUtils.isBlank(reqLoginVo.getPassword())
                 || StringUtils.isBlank(reqLoginVo.getCode())
@@ -129,5 +135,19 @@ public class UserServiceImpl implements UserService {
         user.setUpdateTime(new Date());
         user.setDeleted(1);
         return sysUserMapper.insert(user) > 0;
+    }
+
+    /**
+     * 根据分页信息查询用户角色信息
+     * @return R
+     */
+    @Override
+    public R<PageResult<SysRole>> listSysRoles(ReqListRoleVO reqListRoleVO) {
+        PageHelper.startPage(reqListRoleVO.getPageNum(), reqListRoleVO.getPageSize());
+
+        List<SysRole> sysRoles = sysRoleMapper.findAll();
+        PageInfo<SysRole> pageInfo = new PageInfo<>(sysRoles);
+
+        return R.ok(new PageResult<>(pageInfo));
     }
 }
