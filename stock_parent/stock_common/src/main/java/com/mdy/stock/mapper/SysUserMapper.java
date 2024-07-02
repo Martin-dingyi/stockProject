@@ -41,4 +41,11 @@ public interface SysUserMapper {
      */
     List<SysUser> findUserByStartAndEndTime(@Param("startTime")String startTime, @Param("endTime")String endTime,
                                             @Param("userName")String username, @Param("nickName")String nickName);
+
+    /**
+     * 根据多个id批量删除用户信息
+     * @param ids 存储待删除用户的id
+     * @return 返回执行结果
+     */
+    int deleteByIds(@Param("ids") List<Long> ids);
 }

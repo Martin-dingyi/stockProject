@@ -96,5 +96,16 @@ public class UserController {
         return userService.listSysRoles(reqListRoleVO);
     }
 
-    
+    /**
+     * 根据多个id批量删除用户信息
+     * @param ids 存储待删除用户的id
+     * @return 返回执行结果
+     */
+    @DeleteMapping("/user")
+    private R<String> deleteUsers(@RequestBody List<Long> ids) {
+        if (userService.deleteByIds(ids)) {
+            return R.ok("操作成功");
+        }
+        return R.error("操作失败");
+    }
 }

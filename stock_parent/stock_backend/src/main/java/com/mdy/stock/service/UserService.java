@@ -59,4 +59,11 @@ public interface UserService {
      * @return R
      */
     R<PageResult<SysRole>> listSysRoles(ReqListRoleVO reqListRoleVO);
+
+    /**
+     * 根据多个id批量删除用户信息
+     * @param ids 存储待删除用户的id
+     * @return 返回执行结果
+     */
+    boolean deleteByIds(List<Long> ids);
 }

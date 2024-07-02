@@ -150,4 +150,14 @@ public class UserServiceImpl implements UserService {
 
         return R.ok(new PageResult<>(pageInfo));
     }
+
+    /**
+     * 根据多个id批量删除用户信息
+     * @param ids 存储待删除用户的id
+     * @return 返回执行结果
+     */
+    @Override
+    public boolean deleteByIds(List<Long> ids) {
+        return sysUserMapper.deleteByIds(ids) > 0;
+    }
 }
