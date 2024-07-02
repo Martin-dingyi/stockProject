@@ -88,6 +88,16 @@ public class UserController {
     }
 
     /**
+     * 根据用户id获取关于他的所有角色的信息
+     * @param userId 用户id
+     * @return R
+     */
+    @GetMapping("/user/roles/{userId}")
+    private R<RoleBO> getUserRoles(@PathVariable("userId") Long userId) {
+        return userService.getRolesById(userId);
+    }
+
+    /**
      * 根据分页信息查询用户角色信息
      * @return R
      */

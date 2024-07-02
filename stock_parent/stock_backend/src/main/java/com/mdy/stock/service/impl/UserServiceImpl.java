@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.SysRoleMapper;
 import com.mdy.stock.mapper.SysUserMapper;
+import com.mdy.stock.pojo.domain.RoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
@@ -24,10 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service("userService")
@@ -159,5 +157,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteByIds(List<Long> ids) {
         return sysUserMapper.deleteByIds(ids) > 0;
+    }
+
+    /**
+     * 根据用户id获取关于他的所有角色的信息
+     * @param userId 用户id
+     * @return R
+     */
+    @Override
+    public R<RoleBO> getRolesById(Long userId) {
+        List<Long> roleIds = new ArrayList<>();
+        roleIds.add(userId);
+        // 组装roleBO
+        RoleBO roleBO = new RoleBO();
+        roleBO.setOwnRoleIds(roleIds);
+        roleBO.setAllRole(sysRoleMapper.findRolesById(userId));
+        return R.ok(roleBO);
     }
 }

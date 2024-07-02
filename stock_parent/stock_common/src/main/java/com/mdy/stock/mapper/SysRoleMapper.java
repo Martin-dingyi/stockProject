@@ -1,6 +1,8 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.RoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -29,4 +31,11 @@ public interface SysRoleMapper {
      * @return R
      */
     List<SysRole> findAll();
+
+    /**
+     * 根据用户id获取关于他的所有角色的信息
+     * @param userId 用户id
+     * @return R
+     */
+    List<SysRole> findRolesById(@Param("userId") Long userId);
 }

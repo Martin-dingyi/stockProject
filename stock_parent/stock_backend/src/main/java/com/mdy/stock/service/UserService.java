@@ -1,5 +1,6 @@
 package com.mdy.stock.service;
 
+import com.mdy.stock.pojo.domain.RoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.viewObject.request.ReqListRoleVO;
@@ -66,4 +67,11 @@ public interface UserService {
      * @return 返回执行结果
      */
     boolean deleteByIds(List<Long> ids);
+
+    /**
+     * 根据用户id获取关于他的所有角色的信息
+     * @param userId 用户id
+     * @return R
+     */
+    R<RoleBO> getRolesById(Long userId);
 }

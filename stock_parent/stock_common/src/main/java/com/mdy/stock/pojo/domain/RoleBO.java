@@ -19,7 +19,7 @@ public class RoleBO {
     /**
      * 拥有者的id
      */
-    private List<Long> id;
+    private List<Long> ownRoleIds;
 
     /**
      * 所有用户角色信息

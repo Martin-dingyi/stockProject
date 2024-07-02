@@ -2,6 +2,8 @@ package com.mdy.stock.pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -13,6 +15,7 @@ public class SysRole implements Serializable {
     /**
      * 主键
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     /**
