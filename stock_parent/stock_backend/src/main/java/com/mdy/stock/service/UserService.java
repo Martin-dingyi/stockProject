@@ -43,4 +43,11 @@ public interface UserService {
      * @return PageResult
      */
     R<PageResult<SysUser>> listUsers(ReqListUserVO reqListUserVO);
+
+    /**
+     * 添加用户信息
+     * @param user 接受用户数据
+     * @return 操作成功与否信息
+     */
+    boolean insertUser(SysUser user);
 }

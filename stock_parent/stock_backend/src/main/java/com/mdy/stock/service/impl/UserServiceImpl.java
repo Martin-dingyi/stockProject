@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,5 +119,15 @@ public class UserServiceImpl implements UserService {
         PageInfo<SysUser> pageUserInfo = new PageInfo<>(users);
 
         return R.ok(new PageResult<>(pageUserInfo));
+    }
+
+    @Override
+    public boolean insertUser(SysUser user) {
+        user.setId(idWorker.nextId());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
+        user.setDeleted(1);
+        return sysUserMapper.insert(user) > 0;
     }
 }

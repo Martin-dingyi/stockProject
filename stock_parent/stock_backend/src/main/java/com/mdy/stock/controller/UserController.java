@@ -70,4 +70,17 @@ public class UserController {
     private R<PageResult<SysUser>> listUsers(@RequestBody ReqListUserVO reqListUserVO) {
         return userService.listUsers(reqListUserVO);
     }
+
+    /**
+     * 添加用户信息
+     * @param user 接受用户数据
+     * @return 操作成功与否信息
+     */
+    @PostMapping("/user")
+    private R<String> insertUsers(@RequestBody SysUser user) {
+        if (userService.insertUser(user)) {
+            return R.ok("操作成功");
+        }
+        return R.error("操作失败");
+    }
 }
