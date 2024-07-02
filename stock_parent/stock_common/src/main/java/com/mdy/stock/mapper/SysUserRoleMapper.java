@@ -1,6 +1,9 @@
 package com.mdy.stock.mapper;
 
 import com.mdy.stock.pojo.entity.SysUserRole;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
 
 /**
 * @author martin
@@ -22,4 +25,16 @@ public interface SysUserRoleMapper {
 
     int updateByPrimaryKey(SysUserRole record);
 
+    /**
+     * 增加一条用户和角色的对应关系
+     * @param l id
+     * @param userId 用户id
+     * @param id 角色id
+     * @param date 日期时间
+     * @return 执行结果
+     */
+    int insertUserRoles(@Param("id") long l, @Param("userId")Long userId, @Param("roleId")Long id,
+                        @Param("date")Date date);
+
+    void deleteByUsrId(@Param("userId") Long userId);
 }

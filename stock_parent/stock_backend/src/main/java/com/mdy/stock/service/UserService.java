@@ -1,6 +1,7 @@
 package com.mdy.stock.service;
 
 import com.mdy.stock.pojo.domain.RoleBO;
+import com.mdy.stock.pojo.domain.UpdateRoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.viewObject.request.ReqListRoleVO;
@@ -74,4 +75,11 @@ public interface UserService {
      * @return R
      */
     R<RoleBO> getRolesById(Long userId);
+
+    /**
+     * 根据id修改它的角色信息
+     * @param updateRoleBO 保持角色id和要改变的角色ids
+     * @return 操作结果
+     */
+    boolean updateRolesById(UpdateRoleBO updateRoleBO);
 }

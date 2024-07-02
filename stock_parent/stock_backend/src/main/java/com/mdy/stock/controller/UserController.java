@@ -1,6 +1,7 @@
 package com.mdy.stock.controller;
 
 import com.mdy.stock.pojo.domain.RoleBO;
+import com.mdy.stock.pojo.domain.UpdateRoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.impl.UserServiceImpl;
@@ -88,6 +89,19 @@ public class UserController {
     }
 
     /**
+     * 根据多个id批量删除用户信息
+     * @param ids 存储待删除用户的id
+     * @return 返回执行结果
+     */
+    @DeleteMapping("/user")
+    private R<String> deleteUsers(@RequestBody List<Long> ids) {
+        if (userService.deleteByIds(ids)) {
+            return R.ok("操作成功");
+        }
+        return R.error("操作失败");
+    }
+
+    /**
      * 根据用户id获取关于他的所有角色的信息
      * @param userId 用户id
      * @return R
@@ -107,15 +121,15 @@ public class UserController {
     }
 
     /**
-     * 根据多个id批量删除用户信息
-     * @param ids 存储待删除用户的id
-     * @return 返回执行结果
+     * 根据id修改它的角色信息
+     * @param updateRoleBO 保持角色id和要改变的角色ids
+     * @return 操作结果
      */
-    @DeleteMapping("/user")
-    private R<String> deleteUsers(@RequestBody List<Long> ids) {
-        if (userService.deleteByIds(ids)) {
+    @PutMapping("/user/roles")
+    private R<String> updateUserRoles(@RequestBody UpdateRoleBO updateRoleBO) {
+        if (userService.updateRolesById(updateRoleBO)) {
             return R.ok("操作成功");
         }
-        return R.error("操作失败");
+        return R.error("操纵失败");
     }
 }

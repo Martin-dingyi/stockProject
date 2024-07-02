@@ -6,7 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.SysRoleMapper;
 import com.mdy.stock.mapper.SysUserMapper;
+import com.mdy.stock.mapper.SysUserRoleMapper;
 import com.mdy.stock.pojo.domain.RoleBO;
+import com.mdy.stock.pojo.domain.UpdateRoleBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
+
+    @Resource
+    private SysUserRoleMapper sysUserRoleMapper;
 
     @Resource
     private PasswordEncoder passwordEncoder;
@@ -173,5 +178,25 @@ public class UserServiceImpl implements UserService {
         roleBO.setOwnRoleIds(roleIds);
         roleBO.setAllRole(sysRoleMapper.findRolesById(userId));
         return R.ok(roleBO);
+    }
+
+    /**
+     * 根据id修改它的角色信息
+     * @param updateRoleBO 保持角色id和要改变的角色ids
+     * @return 操作结果
+     */
+    @Override
+    public boolean updateRolesById(UpdateRoleBO updateRoleBO) {
+        List<Long> ids = updateRoleBO.getRoleIds();
+        Long userId = updateRoleBO.getUserId();
+
+        // 先删除用户对应的角色，然后再向表中添加新的对应关系
+        sysUserRoleMapper.deleteByUsrId(userId);
+        for (Long id : ids) {
+            if (sysUserRoleMapper.insertUserRoles(idWorker.nextId(), updateRoleBO.getUserId(), id, new Date()) < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
