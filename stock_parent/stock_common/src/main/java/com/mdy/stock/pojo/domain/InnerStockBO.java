@@ -52,6 +52,6 @@ public class InnerStockBO {
     /**
      * 当前时间，精确到分钟
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="Asia/Shanghai")
     private Date date;
 }

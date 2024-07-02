@@ -47,7 +47,7 @@ public class StockWeeklyBO {
     /**
      * 一周内最大时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone="Asia/Shanghai")
     private Date mxTime;
 
     /**
