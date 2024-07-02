@@ -1,9 +1,7 @@
 package com.mdy.stock.mapper;
 
 import com.mdy.stock.pojo.entity.SysUser;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -32,4 +30,15 @@ public interface SysUserMapper {
 
     List<SysUser> findAll();
 
+    /**
+     * 根据用户创建和更新数据的时间查询
+     *
+     * @param startTime 创建时间
+     * @param endTime   最后更新时间
+     * @param username 用户名
+     * @param nickName 昵称
+     * @return List<SysUser>
+     */
+    List<SysUser> findUserByStartAndEndTime(@Param("startTime")String startTime, @Param("endTime")String endTime,
+                                            @Param("userName")String username, @Param("nickName")String nickName);
 }

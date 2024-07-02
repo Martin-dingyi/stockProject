@@ -2,13 +2,16 @@ package com.mdy.stock.controller;
 
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.impl.UserServiceImpl;
+import com.mdy.stock.viewObject.request.ReqListUserVO;
 import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,5 +59,15 @@ public class UserController {
     @GetMapping("/captcha")
     private R<Map> getCaptchaCode() {
         return userService.getCaptchaCode();
+    }
+
+    /**
+     * 根据分页参数查询用户数据
+     * @param reqListUserVO 前端传来的json数据
+     * @return PageResult
+     */
+    @PostMapping("/users")
+    private R<PageResult<SysUser>> listUsers(@RequestBody ReqListUserVO reqListUserVO) {
+        return userService.listUsers(reqListUserVO);
     }
 }

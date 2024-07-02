@@ -49,6 +49,31 @@
     select * from sys_user
   </select>
 
+  <select id="findUserByStartAndEndTime" resultType="com.mdy.stock.pojo.entity.SysUser">
+    select
+        *
+    from
+        sys_user
+    where
+        1 = 1
+        <if test="startTime != ''">
+          and
+          create_time >= #{startTime}
+        </if>
+        <if test="endTime != ''">
+          and
+          update_time &lt;= #{endTime}
+        </if>
+        <if test="userName != ''">
+          and
+          username = #{userName}
+        </if>
+        <if test="nickName != ''">
+          and
+          nick_name = #{nickName}
+        </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete
     from sys_user

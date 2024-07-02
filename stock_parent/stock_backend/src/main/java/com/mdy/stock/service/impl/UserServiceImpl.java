@@ -1,29 +1,30 @@
 package com.mdy.stock.service.impl;
 
 import cn.hutool.captcha.CaptchaUtil;
-import cn.hutool.captcha.CircleCaptcha;
 import cn.hutool.captcha.LineCaptcha;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mdy.stock.mapper.SysUserMapper;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
 import com.mdy.stock.utils.IdWorker;
+import com.mdy.stock.viewObject.request.ReqListUserVO;
 import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
 import com.mdy.stock.viewObject.response.ResponseCode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static com.mdy.stock.viewObject.response.ResponseCode.DATA_ERROR;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -96,5 +97,26 @@ public class UserServiceImpl implements UserService {
         data.put("imageData", lineCaptcha.getImageBase64());
         data.put("sessionId", sessionId);
         return R.ok(data);
+    }
+
+    /**
+     * 根据分页参数查询用户数据
+     *
+     * @param reqListUserVO 前端传来的json数据
+     * @return PageResult
+     */
+    @Override
+    public R<PageResult<SysUser>> listUsers(ReqListUserVO reqListUserVO) {
+        int pageNum = reqListUserVO.getPageNum();
+        int pageSize = reqListUserVO.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<SysUser> users = sysUserMapper.findUserByStartAndEndTime(reqListUserVO.getStartTime(),
+                reqListUserVO.getEndTime(),
+                reqListUserVO.getUsername(),
+                reqListUserVO.getNickName());
+        PageInfo<SysUser> pageUserInfo = new PageInfo<>(users);
+
+        return R.ok(new PageResult<>(pageUserInfo));
     }
 }

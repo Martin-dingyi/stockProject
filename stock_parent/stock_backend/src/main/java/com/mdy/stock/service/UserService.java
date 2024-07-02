@@ -1,11 +1,11 @@
 package com.mdy.stock.service;
 
-import com.mdy.stock.mapper.SysUserMapper;
 import com.mdy.stock.pojo.entity.SysUser;
+import com.mdy.stock.viewObject.request.ReqListUserVO;
 import com.mdy.stock.viewObject.request.ReqLoginVo;
+import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -35,4 +35,12 @@ public interface UserService {
      * @return
      */
     R<Map> getCaptchaCode();
+
+    /**
+     * 根据分页参数查询用户数据
+     *
+     * @param reqListUserVO 前端传来的json数据
+     * @return PageResult
+     */
+    R<PageResult<SysUser>> listUsers(ReqListUserVO reqListUserVO);
 }

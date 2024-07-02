@@ -2,10 +2,13 @@ package com.mdy.stock.pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
  * 用户表
+ * @author martin
  * @TableName sys_user
  */
 @Data
@@ -78,11 +81,13 @@ public class SysUser implements Serializable {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

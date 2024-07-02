@@ -57,7 +57,7 @@ public class InnerMarketBO {
     /**
      * 当前时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Shanghai")
     private String curTime;
 
 
