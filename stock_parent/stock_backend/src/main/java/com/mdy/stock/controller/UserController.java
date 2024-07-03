@@ -102,6 +102,28 @@ public class UserController {
     }
 
     /**
+     * 根据用户id查询用户信息
+     * @param userId 用户id
+     * @return R
+     */
+    @GetMapping("/user/info/{userId}")
+    private R<SysUser> getUserInfo(@PathVariable("userId") Long userId) {
+        // Todo: 太简单，不用做过多练习
+        return null;
+    }
+
+    /**
+     * 更新用户信息
+     * @param user 接受要更新的用户数据
+     * @return 执行结果
+     */
+    @PutMapping("/user")
+    private R<String> updateUsers(@RequestBody SysUser user) {
+        // Todo: 太简单，不用做过多练习
+        return null;
+    }
+
+    /**
      * 根据用户id获取关于他的所有角色的信息
      * @param userId 用户id
      * @return R
