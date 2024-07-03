@@ -239,7 +239,7 @@ public class StockServiceImpl implements StockService {
      * @return R
      */
     @Override
-    public R<List<InnerStockBO>> getStockMinuteDataByCode(String code) {
+    public R<List<InnerStockBO>> listStockPerMinuteByCode(String code) {
         R<List<InnerStockBO>> data = caffeineCache.get("stockInfo", key -> {
             // 如果缓存不存在，向数据库查询。
             // 1.获取最近有效交易时间
@@ -282,7 +282,7 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<List<InnerMarketBO>> getRelatedStockInfo(String code) {
-        return R.ok(stockRtInfoMapper.findStockByCode(code));
+        return R.ok(stockRtInfoMapper.findStocksByCode(code));
     }
 
     /**
@@ -354,6 +354,17 @@ public class StockServiceImpl implements StockService {
         }
 
         return R.ok(stockWeeklyList);
+    }
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    @Override
+    public R<InnerStockBO> getStockDetailByCode(String code) {
+        Date lastTime = DateTimeUtil.getLastValidDate(DateTime.now()).toDate();
+        return R.ok(stockRtInfoMapper.findStockByCode(code, lastTime));
     }
 
 }

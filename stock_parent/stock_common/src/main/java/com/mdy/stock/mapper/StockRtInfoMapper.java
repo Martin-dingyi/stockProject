@@ -37,14 +37,14 @@ public interface StockRtInfoMapper {
      * @param lastTime 最近交易时间
      * @return
      */
-    List<StockUpDownBO> findAll(@Param("curTime") Date lastTime);
+    List<StockUpDownBO> findAll(@Param("curTime")Date lastTime);
 
     /**
      * 查询涨幅榜前四条数据，根据涨幅排序
      * @param lastTime 最近交易时间
      * @return
      */
-    List<StockUpDownBO> findFourUpDownData(@Param("curTime") Date lastTime);
+    List<StockUpDownBO> findFourUpDownData(@Param("curTime")Date lastTime);
 
     /**
      * 查询涨跌停股票的时间和数量
@@ -54,29 +54,30 @@ public interface StockRtInfoMapper {
      * @return
      */
     @MapKey("time") // 当mybatis的sql返回是map类型数据时，要用该注解指定谁是key
-    List<Map> findUpDownCount(@Param("openTime") Date openTime,
-                              @Param("endTime") Date lastTime, @Param("flag") int flag);
+    List<Map> findUpDownCount(@Param("openTime")Date openTime,
+                              @Param("endTime")Date lastTime, @Param("flag")int flag);
 
     /**
      * 获取涨跌区间计数
      * @return map列表，每个map中记录区间和计数
      */
     @MapKey("title")
-    List<Map<String, Object>> findUpDownInterValCnt(@Param("curTime") Date time);
+    List<Map<String, Object>> findUpDownInterValCnt(@Param("curTime")Date time);
 
     /**
      * 根据编码获取单一股票的最近的分时数据
      * @param code 股票编码
      * @return R
      */
-    List<InnerStockBO> findSingleStockMinuteDataByCode(@Param("openTime") Date openTime,
-                                                       @Param("endTime") Date lastTime, @Param("code") String code);
+    List<InnerStockBO> findSingleStockMinuteDataByCode(@Param("openTime")Date openTime,
+                                                       @Param("endTime")Date lastTime, @Param("code")String code);
     /**
      * 根据编码获取单一股票最近几天的日k线数据
      * @param code 股票编码
      * @return R
      */
-    List<StockDayBO> findStockKDayDataByCode(@Param("startDate") Date lastTimePreMouth, @Param("endDate") Date lastTime, @Param("code") String code);
+    List<StockDayBO> findStockKDayDataByCode(@Param("startDate")Date lastTimePreMouth, @Param("endDate")Date lastTime,
+                                             @Param("code")String code);
 
     /**
      * 将所有StockRtInfo批量插入到数据库中
@@ -84,7 +85,7 @@ public interface StockRtInfoMapper {
      * @param stockRtInfoList 个股数据列表
      * @return
      */
-    int insertStockRtInfoList(@Param("stockList") List<StockRtInfo> stockRtInfoList);
+    int insertStockRtInfoList(@Param("stockList")List<StockRtInfo> stockRtInfoList);
 
     /**
      * 查询数据库内所有股票编码
@@ -97,12 +98,19 @@ public interface StockRtInfoMapper {
      * @param code 模糊code
      * @return 返回查询到的股票的code和name
      */
-    List<InnerMarketBO> findStockByCode(@Param("code") String code);
+    List<InnerMarketBO> findStocksByCode(@Param("code")String code);
 
     /**
      * 根据股票编码获取股票周k线数据
      * @param code 编码
      * @return R
      */
-    List<StockRtInfo> findStockWeeklyByCode(@Param("code") String code, @Param("validDates") List<Date> validDates);
+    List<StockRtInfo> findStockWeeklyByCode(@Param("code")String code, @Param("validDates") List<Date> validDates);
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    InnerStockBO findStockByCode(@Param("code")String code, @Param("curTime")Date time);
 }

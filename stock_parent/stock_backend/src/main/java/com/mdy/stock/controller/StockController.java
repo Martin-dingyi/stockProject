@@ -105,14 +105,25 @@ public class StockController {
     }
 
     /**
-     * 根据编码获取单一股票的最近的分时数据
+     * 根据编码获取所有个股股票的最近的分时数据
      * @param code 股票编码
      * @return R
      */
     @GetMapping("/stock/screen/time-sharing")
-    public R<List<InnerStockBO>> getStockMinuteDataByCode(@RequestParam(name = "code") String code) {
-        return stockService.getStockMinuteDataByCode(code);
+    public R<List<InnerStockBO>> listStockPerMinuteByCode(@RequestParam(name = "code") String code) {
+        return stockService.listStockPerMinuteByCode(code);
     }
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    @GetMapping("/stock/screen/second/detail")
+    public R<InnerStockBO> getStockDetailByCode(@RequestParam(name = "code") String code) {
+        return stockService.getStockDetailByCode(code);
+    }
+
 
     /**
      * 根据编码获取单一股票最近几天的日k线数据

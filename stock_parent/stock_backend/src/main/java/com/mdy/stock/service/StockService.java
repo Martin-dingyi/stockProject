@@ -68,11 +68,11 @@ public interface StockService {
     R<Map<String, Object>> getStockUpDownIntervalCnt();
 
     /**
-     * 根据编码获取单一股票的最近的分时数据
+     * 根据编码获取所有个股股票的最近的分时数据
      * @param code 股票编码
      * @return R
      */
-    R<List<InnerStockBO>> getStockMinuteDataByCode(String code);
+    R<List<InnerStockBO>> listStockPerMinuteByCode(String code);
 
     /**
      * 根据编码获取单一股票最近几天的日k线数据
@@ -103,4 +103,11 @@ public interface StockService {
      * @return R
      */
     R<List<StockWeeklyBO>> getStockWeeklyByCode(String code);
+
+    /**
+     * 根据编码获取单一股票的最近的分时数据
+     * @param code 股票编码
+     * @return R
+     */
+    R<InnerStockBO> getStockDetailByCode(String code);
 }

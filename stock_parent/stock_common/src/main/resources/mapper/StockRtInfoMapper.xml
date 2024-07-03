@@ -201,7 +201,7 @@
     FROM stock_rt_info
   </select>
 
-  <select id="findStockByCode" resultType="com.mdy.stock.pojo.domain.InnerMarketBO">
+  <select id="findStocksByCode" resultType="com.mdy.stock.pojo.domain.InnerMarketBO">
     select
       distinct stock_code as code,
                stock_name as name
@@ -226,6 +226,25 @@
         <foreach collection="validDates" separator="," item="date" open="(" close=")">
           #{date}
         </foreach>
+  </select>
+
+  <select id="findStockByCode" resultType="com.mdy.stock.pojo.domain.InnerStockBO">
+    select
+        stock_code as code,
+        stock_name as name,
+        pre_close_price as preClosePrice,
+        open_price as openPrice,
+        cur_price as tradePrice,
+        min_price as lowPrice,
+        max_price as highPrice,
+        trade_amount as tradeAmt,
+        trade_volume as tradeVol,
+        cur_time as date
+    from
+      stock_rt_info
+    where
+      stock_code = #{code} and
+      cur_time = #{curTime}
   </select>
 
 
