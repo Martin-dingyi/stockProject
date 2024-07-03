@@ -4,11 +4,13 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mdy.stock.mapper.SysPermissionMapper;
 import com.mdy.stock.mapper.SysRoleMapper;
 import com.mdy.stock.mapper.SysUserMapper;
 import com.mdy.stock.mapper.SysUserRoleMapper;
 import com.mdy.stock.pojo.domain.RoleBO;
 import com.mdy.stock.pojo.domain.UpdateRoleBO;
+import com.mdy.stock.pojo.domain.SysPermissionBO;
 import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.UserService;
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
     private SysUserRoleMapper sysUserRoleMapper;
 
     @Resource
+    private SysPermissionMapper sysPermissionMapper;
+
+    @Resource
     private PasswordEncoder passwordEncoder;
 
     @Resource
@@ -57,9 +62,50 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 组装menus，type的值决定本次递归组装的层级
+     * @param permissions 权限集合
+     * @param type 当前应组装的权限的层级
+     * @return 返回组装好的menus
+     */
+    private List<SysPermissionBO> composeMenus(List<SysPermissionBO> permissions, List<SysPermissionBO> menus, Integer type) {
+        if (type >= 3) {
+            return menus;
+        }
+
+        // 用一个map记录多个parentId和type都相同的permission
+        Map<Long, List<SysPermissionBO>> childrenMap = new HashMap<>();
+        for (SysPermissionBO permission : permissions) {
+            if (Objects.equals(permission.getType(), type)) {
+                permission.setChildren(new ArrayList<>());
+                if (childrenMap.containsKey(permission.getParentId())) {
+                    childrenMap.get(permission.getParentId()).add(permission);
+                } else {
+                    List<SysPermissionBO> children = new ArrayList<>();
+                    children.add(permission);
+                    childrenMap.put(permission.getParentId(), children);
+                }
+            }
+        }
+
+        // 将组装好的子集合，按照parentId分别插入到对应的父结点中
+        if (menus.isEmpty()) {
+            menus.addAll(childrenMap.get(0L));
+        } else {
+            for (SysPermissionBO menu : menus) {
+                // childrenMap中有和menu的id相等的key，说明该键值对的键值是这个menu的子集
+                if (childrenMap.containsKey(menu.getId())) {
+                    menu.setChildren(childrenMap.get(menu.getId()));
+                }
+            }
+        }
+
+        return composeMenus(permissions, menus, type + 1);
+    }
+
+    /**
      * 登录功能
      * @param reqLoginVo 请求信息包含用户名、密码和验证码
-     * @return
+     * @return 登录成功或失败信息
      */
     @Override
     public R<RespLoginVo> login(ReqLoginVO reqLoginVo) {
@@ -69,22 +115,45 @@ public class UserServiceImpl implements UserService {
                 || StringUtils.isBlank(reqLoginVo.getSessionId())) {
             return R.error(ResponseCode.DATA_ERROR);
         }
+
         RespLoginVo respLoginVo = new RespLoginVo();
         // 获取redis中存储的对应验证码，如果不存在或不一致则返回错误信息
         String redisCode = redisTemplate.opsForValue().get(reqLoginVo.getSessionId());
         if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(reqLoginVo.getCode())) {
             return R.error(ResponseCode.CHECK_CODE_ERROR);
         }
-        // 通过用户名查找用户信息
+
+        // 通过用户名查找用户信息，如果用户不存在则返回错误信息。
         SysUser sysUser = sysUserMapper.findUserByUserName(reqLoginVo.getUsername());
         if (sysUser == null) {
             return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
         }
-        // 将输入的密码和数据库中的用户信息中的加密密码比对
+
+        // 将输入的密码和数据库中的用户信息中的加密密码比对，如果不一致则报错。
         if (!passwordEncoder.matches(reqLoginVo.getPassword(), sysUser.getPassword())) {
             return R.error(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
+
+        // 获取用户所拥有的权限集合
+        List<SysPermissionBO> sysPermissions = sysPermissionMapper.findUserPermissions(sysUser.getId());
+        // 将权限按照层级顺序组装到ResLoginVO的children属性中
+        List<SysPermissionBO> menus = new ArrayList<>();
+        // 形成菜单栏层级
+        composeMenus(sysPermissions, menus, 1);
+
+        // 组装按钮
+        List<String> buttonPermissions = new ArrayList<>();
+        for (SysPermissionBO sysPermission : sysPermissions) {
+            if (Objects.equals(sysPermission.getType(), 3)) {
+                buttonPermissions.add(sysPermission.getButtonName());
+            }
+        }
+
+        // 组装respLoginVo
+        // BeanUtils.copyProperties方法将sysUser的属性值复制到respLoginVo中。
         BeanUtils.copyProperties(sysUser, respLoginVo);
+        respLoginVo.setMenus(menus);
+        respLoginVo.setPermissions(buttonPermissions);
         return R.ok(respLoginVo);
     }
 

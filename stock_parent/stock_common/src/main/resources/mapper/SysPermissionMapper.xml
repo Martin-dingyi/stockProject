@@ -37,7 +37,36 @@
         where  id = #{id,jdbcType=BIGINT} 
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="findUserPermissions" resultType="com.mdy.stock.pojo.domain.SysPermissionBO">
+    select
+      sp.id,
+      sp.title,
+      sp.icon,
+      sp.code as buttonName,
+      sp.url as path,
+      sp.name,
+      sp.type,
+      sp.pid as parentId
+    from
+      sys_permission sp
+    where
+      id in (
+        select
+          distinct srp.permission_id
+        from
+          sys_role_permission as srp
+        where srp.role_id in (
+          select
+            sur.role_id
+          from
+            sys_user_role as sur
+          where
+            user_id = #{userId}
+        )
+      )
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_permission
         where  id = #{id,jdbcType=BIGINT} 
     </delete>

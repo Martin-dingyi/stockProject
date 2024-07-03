@@ -1,6 +1,10 @@
 package com.mdy.stock.mapper;
 
+import com.mdy.stock.pojo.domain.SysPermissionBO;
 import com.mdy.stock.pojo.entity.SysPermission;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author martin
@@ -22,4 +26,10 @@ public interface SysPermissionMapper {
 
     int updateByPrimaryKey(SysPermission record);
 
+    /**
+     * 获取用户所拥有的权限
+     * @param id 用户id
+     * @return 权限集合
+     */
+    List<SysPermissionBO> findUserPermissions(@Param("userId")Long id);
 }

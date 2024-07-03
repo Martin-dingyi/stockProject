@@ -2,10 +2,13 @@ package com.mdy.stock.viewObject.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.mdy.stock.pojo.domain.SysPermissionBO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author mdy
@@ -24,16 +27,50 @@ public class RespLoginVo {
      */
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
-    /*
-    * 用户名
-    * */
+
+    /**
+     * 用户名
+     */
     private String username;
-    /*
-     * 用户昵称
-     * */
-    private String nickname;
-    /*
-    * 电话号码
-    * */
+
+    /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
+     * 电话号码
+     */
     private String phone;
+
+    /**
+     * 电子邮箱
+     */
+    private String email;
+
+    /**
+     * 性别
+     */
+    private Integer sex;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 权限目录
+     */
+    private List<SysPermissionBO> menus;
+
+    /**
+     * 权限按钮标识
+     */
+    private List<String> permissions;
+
 }
