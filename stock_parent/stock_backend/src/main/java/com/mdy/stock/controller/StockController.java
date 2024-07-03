@@ -124,6 +124,15 @@ public class StockController {
         return stockService.getStockDetailByCode(code);
     }
 
+    /**
+     * 根据编码获取单一股票最近的十条数据
+     * @param code 股票编码
+     * @return R
+     */
+    @GetMapping("stock/screen/second")
+    public R<List<InnerStockBO>> listStocksLatestByCode(@RequestParam(name = "code") String code) {
+        return stockService.listStocksLatestByCode(code);
+    }
 
     /**
      * 根据编码获取单一股票最近几天的日k线数据

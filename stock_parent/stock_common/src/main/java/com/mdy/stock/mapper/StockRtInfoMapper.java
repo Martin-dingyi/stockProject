@@ -113,4 +113,11 @@ public interface StockRtInfoMapper {
      * @return R
      */
     InnerStockBO findStockByCode(@Param("code")String code, @Param("curTime")Date time);
+
+    /**
+     * 根据编码获取单一股票最近的十条数据
+     * @param code 股票编码
+     * @return R
+     */
+    List<InnerStockBO> findTenStocksLatest(@Param("code")String code);
 }

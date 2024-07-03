@@ -110,4 +110,11 @@ public interface StockService {
      * @return R
      */
     R<InnerStockBO> getStockDetailByCode(String code);
+
+    /**
+     * 根据编码获取单一股票最近的十条数据
+     * @param code 股票编码
+     * @return R
+     */
+    R<List<InnerStockBO>> listStocksLatestByCode(String code);
 }

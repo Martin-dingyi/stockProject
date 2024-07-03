@@ -367,4 +367,14 @@ public class StockServiceImpl implements StockService {
         return R.ok(stockRtInfoMapper.findStockByCode(code, lastTime));
     }
 
+    /**
+     * 根据编码获取单一股票最近的十条数据
+     * @param code 股票编码
+     * @return R
+     */
+    @Override
+    public R<List<InnerStockBO>> listStocksLatestByCode(String code) {
+        return R.ok(stockRtInfoMapper.findTenStocksLatest(code));
+    }
+
 }
