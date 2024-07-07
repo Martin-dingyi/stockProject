@@ -18,13 +18,15 @@ import java.io.IOException;
  * @description 未登录用户拒绝处理器
  */
 public class StockAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    /**
+     * 用户未登录时访问除公共资源以外的资源时触发
+     */
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        //说明 票据解析出现异常，票据就失效了
-        R<Object> r = R.error(ResponseCode.NOT_PERMISSION);
-        String respStr = new ObjectMapper().writeValueAsString(r);
+
+        String respStr = new ObjectMapper().writeValueAsString(R.error(ResponseCode.NOT_PERMISSION));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(respStr);

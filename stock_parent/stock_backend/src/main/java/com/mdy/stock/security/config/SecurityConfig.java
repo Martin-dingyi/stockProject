@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.annotation.Resource;
+
 /**
  * @author mdy
  * @date 2024-07-07 6:14
@@ -25,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 启动注解使用权限控制
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
 
     /**
@@ -34,18 +36,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     private String[] getPubPath() {
         // 公共访问资源
-        String[] urls = {
+        return new String[]{
                 "/**/*.css", "/**/*.js", "/favicon.ico", "/doc.html",
                 "/druid/**", "/webjars/**", "/v2/api-docs", "/api/captcha",
                 "/swagger/**", "/swagger-resources/**", "/swagger-ui.html"
         };
-        return urls;
     }
 
     /**
      * 配置过滤规则
      * @param http
-     * @throws Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -59,12 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 公共资源都允许访问
                 .antMatchers(getPubPath()).permitAll()
                 .anyRequest().authenticated();
+
 //        // 开启允许iframe嵌套。security默认禁用iframe跨域与缓存
 //        http.headers().frameOptions().disable().cacheControl().disable();
 //        // session禁用
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // 自定义的过滤器
+        // 设置使用自定义的过滤器
         http.addFilterBefore(jwtLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter(), JwtLoginAuthenticationFilter.class);
         // 配置权限访问拒绝处理器
@@ -75,10 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * 自定义认证过滤器bean
      * @return JwtLoginAuthenticationFilter
-     * @throws Exception
      */
     @Bean
     public JwtLoginAuthenticationFilter jwtLoginAuthenticationFilter() throws Exception {
+        // 设置该过滤器过滤的访问路径
         JwtLoginAuthenticationFilter filter = new JwtLoginAuthenticationFilter("/api/login");
         filter.setAuthenticationManager(authenticationManagerBean());
         return filter;
@@ -86,9 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 自定义授权过滤器
-     *
-     * @return
-     * @throws Exception
+     * @return JwtAuthorizationFilter
      */
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {

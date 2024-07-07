@@ -3,7 +3,6 @@ package com.mdy.stock.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.ResponseCode;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -19,16 +18,17 @@ import java.io.IOException;
  * @description 拒绝处理器
  */
 
-@Slf4j
 public class StockAccessDenyHandler implements AccessDeniedHandler {
+
+    /**
+     * 当访问未授权的资源会触发该处理器
+     */
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException ex) throws IOException, ServletException {
-        log.info("访问拒绝，异常信息：{}", ex.getMessage());
-        // 说明 票据解析出现异常，票据就失效了
-        R<Object> r = R.error(ResponseCode.NOT_PERMISSION);
-        String respStr = new ObjectMapper().writeValueAsString(r);
+
+        String respStr = new ObjectMapper().writeValueAsString(R.error(ResponseCode.NOT_PERMISSION));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(respStr);

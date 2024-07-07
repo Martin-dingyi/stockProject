@@ -28,38 +28,36 @@ import java.util.List;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     /**
-     * 访问过滤的方法
-     * @param request
-     * @param response
+     * 每个http请求都会经过该过滤器
+     * @param request http请求对象
+     * @param response http响应对象
      * @param filterChain 过滤器链
-     * @throws ServletException
-     * @throws IOException
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // 1.从request对象下获取token数据，约定key：Authorization
+        // 从request对象下获取token数据，约定key：Authorization
         String tokenStr = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         // 判断token字符串是否存在
         if (tokenStr == null) {
-            // 如果票据为null，可能用户还没有认证，正准备去认证,所以放行请求
-            // 放行后，会不会访问当受保护的资源呢？不会，因为没有生成UsernamePasswordAuthenticationToken
+            // 如果票据为null，可能用户还没有认证
             filterChain.doFilter(request, response);
             return;
         }
-        // 2.解析tokenStr,获取用户详情信息
+
+        // 解析tokenStr，获取用户详情信息
         Claims claims = JwtTokenUtil.checkJwt(tokenStr);
         // token字符串失效的情况
         if (claims == null) {
             // claims为null表示票据失效
-            R<Object> r = R.error(ResponseCode.TOKEN_ERROR);
-            String respStr = new ObjectMapper().writeValueAsString(r);
+            String respStr = new ObjectMapper().writeValueAsString(R.error(ResponseCode.TOKEN_ERROR));
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(respStr);
             return;
         }
+
         // 获取用户名和权限信息
         String userName = JwtTokenUtil.getUsername(tokenStr);
         // 生成token时，权限字符串的格式是：[P8,ROLE_ADMIN]
@@ -71,7 +69,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userName, null, authorityList);
         // 将token对象存入安全上限文，这样，线程无论走到哪里，都可以获取token对象，验证当前用户访问对应资源是否被授权
         SecurityContextHolder.getContext().setAuthentication(token);
+
         filterChain.doFilter(request, response);
     }
-
 }

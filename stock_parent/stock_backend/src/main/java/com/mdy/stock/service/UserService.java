@@ -29,13 +29,6 @@ public interface UserService {
     SysUser findUserByName(String name);
 
     /**
-     * 根据用户名、密码和验证码验证登录信息
-     * @param reqLoginVo 保持登录信息的对象
-     * @return
-     */
-    R<RespLoginVo> login(ReqLoginVO reqLoginVo);
-
-    /**
      * 获取验证码
      * @return
      */

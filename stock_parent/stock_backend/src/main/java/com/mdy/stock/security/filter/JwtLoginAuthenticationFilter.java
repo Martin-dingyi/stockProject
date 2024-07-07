@@ -34,11 +34,8 @@ import java.util.List;
  */
 public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
+    @Resource
     private RedisTemplate<String, String> redisTemplate;
-
-    public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     public JwtLoginAuthenticationFilter(String loginUrl) {
         super(loginUrl);
@@ -47,10 +44,7 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
     /**
      * @param request  http请求对象
      * @param response http响应对象
-     * @return
-     * @throws AuthenticationException
-     * @throws IOException
-     * @throws ServletException
+     * @return Authentication
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
@@ -66,7 +60,7 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
 
         // 验证请求信息
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("UTF-8");
         if (reqLoginVO == null || org.apache.commons.lang3.StringUtils.isBlank(reqLoginVO.getUsername())
                 || org.apache.commons.lang3.StringUtils.isBlank(reqLoginVO.getPassword())
                 || org.apache.commons.lang3.StringUtils.isBlank(reqLoginVO.getCode())
@@ -75,11 +69,8 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
             return null;
         }
 
-        // 在这里做验证码验证
-        // Todo:测试
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        // 做验证码验证
         String checkCode = redisTemplate.opsForValue().get(reqLoginVO.getSessionId());
-        // Todo:先别tm搞验证码了
         if (StringUtils.isBlank(checkCode) || !checkCode.equalsIgnoreCase(reqLoginVO.getCode())) {
             response.getWriter().write(String.valueOf(R.error(ResponseCode.CHECK_CODE_ERROR.getMessage())));
             return null;
@@ -103,12 +94,10 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
     /**
      * 用户认证成功后回调的方法
      * 认证成功后，响应前端token信息
-     * @param request
-     * @param response
-     * @param chain      security的过滤器链
-     * @param authResult
-     * @throws IOException
-     * @throws ServletException
+     * @param request http请求对象
+     * @param response http响应对象
+     * @param chain security的过滤器链
+     * @param authResult 验证结果
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
@@ -116,10 +105,9 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         // 获取用户的详情信息
-        LoginUserDetail userDetail = (LoginUserDetail) authResult.getPrincipal();
-        // 组装LoginRespVoExt
-        String username = userDetail.getUsername();
-        // 获取权限集合对象
+        LoginUserDetail userDetail = (LoginUserDetail)authResult.getPrincipal();
+
+        // 权限集合转换为String
         List<GrantedAuthority> authorities = userDetail.getAuthorities();
         String auStrList = authorities.toString();
 
@@ -127,11 +115,10 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
         LoginRespVOExt resp = new LoginRespVOExt();
         BeanUtils.copyProperties(userDetail, resp);
         // 生成token字符串:将用户名称和权限信息价格生成token字符串
-        String tokenStr = JwtTokenUtil.createToken(username, auStrList);
+        String tokenStr = JwtTokenUtil.createToken(userDetail.getUsername(), auStrList);
         resp.setAccessToken(tokenStr);
 
-        R<Object> r = R.ok(resp);
-        String respStr = new ObjectMapper().writeValueAsString(r);
+        String respStr = new ObjectMapper().writeValueAsString(R.ok(resp));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(respStr);
@@ -139,17 +126,13 @@ public class JwtLoginAuthenticationFilter extends AbstractAuthenticationProcessi
 
     /**
      * 认证失败后，回调的方法
-     *
-     * @param request
-     * @param response
-     * @param failed
-     * @throws IOException
-     * @throws ServletException
+     * @param request http请求对象
+     * @param response http响应对象
+     * @param failed 异常信息
      */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        R<Object> r = R.error(ResponseCode.SYSTEM_PASSWORD_ERROR);
-        String respStr = new ObjectMapper().writeValueAsString(r);
+        String respStr = new ObjectMapper().writeValueAsString(R.error(ResponseCode.SYSTEM_PASSWORD_ERROR));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(respStr);

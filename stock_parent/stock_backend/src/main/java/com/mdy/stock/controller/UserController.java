@@ -1,17 +1,10 @@
 package com.mdy.stock.controller;
 
-import com.mdy.stock.pojo.domain.RoleBO;
-import com.mdy.stock.pojo.domain.UpdateRoleBO;
-import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.impl.UserServiceImpl;
-import com.mdy.stock.viewObject.request.ReqListRoleVO;
 import com.mdy.stock.viewObject.request.ReqListUserVO;
-import com.mdy.stock.viewObject.request.ReqLoginVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
-import com.mdy.stock.viewObject.response.RespLoginVo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -37,27 +30,6 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * 单例测试
-     * @param name 用户名
-     * @return 用户数据
-     */
-    @GetMapping("/user/{username}")
-    public SysUser getUserByName(@PathVariable("username") String name) {
-        System.out.println(passwordEncoder.encode(name));
-        return userService.findUserByName(name);
-    }
-
-    /**
-     * 用户登录功能
-     * @param reqLoginVo 封装的请求对象
-     * @return 登录信息
-     */
-//    @PostMapping("/login")
-//    public R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
-//        return userService.login(reqLoginVo);
-//    }
-
-    /**
      * 生成验证码
      * @return 验证码
      */
@@ -71,6 +43,7 @@ public class UserController {
      * @param reqListUserVO 前端传来的json数据
      * @return PageResult
      */
+    @PreAuthorize("hasAuthority('sys:user:list')")
     @PostMapping("/users")
     public R<PageResult<SysUser>> listUsers(@RequestBody ReqListUserVO reqListUserVO) {
         return userService.listUsers(reqListUserVO);
@@ -109,9 +82,10 @@ public class UserController {
      * @param userId 用户id
      * @return R
      */
+    @PreAuthorize("hasAuthority('sys:user:list')")
     @GetMapping("/user/info/{userId}")
     public R<SysUser> getUserInfo(@PathVariable("userId") Long userId) {
-        // Todo: 太简单，不用做过多练习
+        // 太简单，不用做过多练习
         return null;
     }
 
@@ -123,39 +97,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('sys:user:update')")
     @PutMapping("/user")
     public R<String> updateUsers(@RequestBody SysUser user) {
-        // Todo: 太简单，不用做过多练习
+        // 太简单，不用做过多练习
         return null;
-    }
-
-    /**
-     * 根据用户id获取关于他的所有角色的信息
-     * @param userId 用户id
-     * @return R
-     */
-    @GetMapping("/user/roles/{userId}")
-    public R<RoleBO> getUserRoles(@PathVariable("userId") Long userId) {
-        return userService.getRolesById(userId);
-    }
-
-    /**
-     * 根据分页信息查询用户角色信息
-     * @return R
-     */
-    @PostMapping("/roles")
-    public R<PageResult<SysRole>>  listSysRoles(@RequestBody ReqListRoleVO reqListRoleVO) {
-        return userService.listSysRoles(reqListRoleVO);
-    }
-
-    /**
-     * 根据id修改它的角色信息
-     * @param updateRoleBO 保持角色id和要改变的角色ids
-     * @return 操作结果
-     */
-    @PutMapping("/user/roles")
-    public R<String> updateUserRoles(@RequestBody UpdateRoleBO updateRoleBO) {
-        if (userService.updateRolesById(updateRoleBO)) {
-            return R.ok("操作成功");
-        }
-        return R.error("操纵失败");
     }
 }
