@@ -30,10 +30,10 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserServiceImpl userService;
 
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
     /**
@@ -42,7 +42,7 @@ public class UserController {
      * @return 用户数据
      */
     @GetMapping("/user/{username}")
-    private SysUser getUserByName(@PathVariable("username") String name) {
+    public SysUser getUserByName(@PathVariable("username") String name) {
         System.out.println(passwordEncoder.encode(name));
         return userService.findUserByName(name);
     }
@@ -53,7 +53,7 @@ public class UserController {
      * @return 登录信息
      */
 //    @PostMapping("/login")
-//    private R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
+//    public R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
 //        return userService.login(reqLoginVo);
 //    }
 
@@ -62,7 +62,7 @@ public class UserController {
      * @return 验证码
      */
     @GetMapping("/captcha")
-    private R<Map> getCaptchaCode() {
+    public R<Map> getCaptchaCode() {
         return userService.getCaptchaCode();
     }
 
@@ -72,7 +72,7 @@ public class UserController {
      * @return PageResult
      */
     @PostMapping("/users")
-    private R<PageResult<SysUser>> listUsers(@RequestBody ReqListUserVO reqListUserVO) {
+    public R<PageResult<SysUser>> listUsers(@RequestBody ReqListUserVO reqListUserVO) {
         return userService.listUsers(reqListUserVO);
     }
 
@@ -83,7 +83,7 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('sys:user:add')")
     @PostMapping("/user")
-    private R<String> insertUsers(@RequestBody SysUser user) {
+    public R<String> insertUsers(@RequestBody SysUser user) {
         if (userService.insertUser(user)) {
             return R.ok("操作成功");
         }
@@ -97,7 +97,7 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('sys:user:delete')")
     @DeleteMapping("/user")
-    private R<String> deleteUsers(@RequestBody List<Long> ids) {
+    public R<String> deleteUsers(@RequestBody List<Long> ids) {
         if (userService.deleteByIds(ids)) {
             return R.ok("操作成功");
         }
@@ -110,7 +110,7 @@ public class UserController {
      * @return R
      */
     @GetMapping("/user/info/{userId}")
-    private R<SysUser> getUserInfo(@PathVariable("userId") Long userId) {
+    public R<SysUser> getUserInfo(@PathVariable("userId") Long userId) {
         // Todo: 太简单，不用做过多练习
         return null;
     }
@@ -122,7 +122,7 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('sys:user:update')")
     @PutMapping("/user")
-    private R<String> updateUsers(@RequestBody SysUser user) {
+    public R<String> updateUsers(@RequestBody SysUser user) {
         // Todo: 太简单，不用做过多练习
         return null;
     }
@@ -133,7 +133,7 @@ public class UserController {
      * @return R
      */
     @GetMapping("/user/roles/{userId}")
-    private R<RoleBO> getUserRoles(@PathVariable("userId") Long userId) {
+    public R<RoleBO> getUserRoles(@PathVariable("userId") Long userId) {
         return userService.getRolesById(userId);
     }
 
@@ -142,7 +142,7 @@ public class UserController {
      * @return R
      */
     @PostMapping("/roles")
-    private R<PageResult<SysRole>>  listSysRoles(@RequestBody ReqListRoleVO reqListRoleVO) {
+    public R<PageResult<SysRole>>  listSysRoles(@RequestBody ReqListRoleVO reqListRoleVO) {
         return userService.listSysRoles(reqListRoleVO);
     }
 
@@ -152,7 +152,7 @@ public class UserController {
      * @return 操作结果
      */
     @PutMapping("/user/roles")
-    private R<String> updateUserRoles(@RequestBody UpdateRoleBO updateRoleBO) {
+    public R<String> updateUserRoles(@RequestBody UpdateRoleBO updateRoleBO) {
         if (userService.updateRolesById(updateRoleBO)) {
             return R.ok("操作成功");
         }

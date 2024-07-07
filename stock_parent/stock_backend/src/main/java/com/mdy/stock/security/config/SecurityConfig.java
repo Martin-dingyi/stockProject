@@ -2,8 +2,8 @@ package com.mdy.stock.security.config;
 
 import com.mdy.stock.security.filter.JwtAuthorizationFilter;
 import com.mdy.stock.security.filter.JwtLoginAuthenticationFilter;
-import com.mdy.stock.security.filter.StockAccessDenyHandler;
-import com.mdy.stock.security.filter.StockAuthenticationEntryPoint;
+import com.mdy.stock.security.handler.StockAccessDenyHandler;
+import com.mdy.stock.security.handler.StockAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.annotation.Resource;
 
 /**
  * @author mdy
