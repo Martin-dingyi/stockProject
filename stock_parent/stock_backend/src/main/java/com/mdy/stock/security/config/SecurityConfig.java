@@ -55,17 +55,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 登出功能
-        http.logout().logoutUrl("/api/logout").invalidateHttpSession(true);
-        // 开启允许iframe嵌套。security默认禁用iframe跨域与缓存
-        http.headers().frameOptions().disable().cacheControl().disable();
-        // session禁用
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.csrf().disable(); // 禁用跨站请求伪造
-        http.authorizeRequests() // 对资源进行认证处理
+        http.formLogin()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .csrf().disable()
+                .authorizeRequests() // 对资源进行认证处理
                 // 公共资源都允许访问
                 .antMatchers(getPubPath()).permitAll()
                 .anyRequest().authenticated();
+//        // 开启允许iframe嵌套。security默认禁用iframe跨域与缓存
+//        http.headers().frameOptions().disable().cacheControl().disable();
+//        // session禁用
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         // 自定义的过滤器
         http.addFilterBefore(jwtLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthorizationFilter(), JwtLoginAuthenticationFilter.class);

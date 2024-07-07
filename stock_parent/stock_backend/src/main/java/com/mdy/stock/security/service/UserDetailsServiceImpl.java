@@ -27,7 +27,7 @@ import java.util.*;
  * @description
  */
 
-@Component
+@Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Resource
