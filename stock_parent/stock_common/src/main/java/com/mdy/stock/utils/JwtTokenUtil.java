@@ -13,22 +13,22 @@ import java.util.Map;
  * @date 2020/5/19  16:38
  */
 public class JwtTokenUtil {
-    // Token请求头
+    // 请求头中Token的key
     public static final String TOKEN_HEADER = "authorization";
-    // Token前缀
-    public static final String TOKEN_PREFIX = "Bearer ";
-
     // 签名主题
     public static final String SUBJECT = "JRZS";
-    // 过期时间,单位毫秒
+    // 过期时间，单位ms。默认为7天
     public static final long EXPIRATION = 1000 * 60 * 60 * 24 * 7;
-    // 应用密钥
-    public static final String APPSERVER_KEY = "woshima123";
+    // 应用密钥，默认为abcdrfg。注意不得低于4位
+    public static final String APPSERVER_KEY = "abcdrfg";
     // 角色权限声明
     private static final String ROLE_CLAIMS = "role";
 
     /**
      * 生成Token
+     * @param username 用户名
+     * @param role 该用户所拥有的角色
+     * @return Token字符串
      */
     public static String createToken(String username, String role) {
         Map<String, Object> map = new HashMap<>();
@@ -45,20 +45,19 @@ public class JwtTokenUtil {
     }
 
     /**
-     * 校验Token
+     * 反解析Token
+     * @param token token字符串
+     * @return 解析结果封装在Claims中
      */
-    public static Claims checkJWT(String token) {
-        try {
-            final Claims claims = Jwts.parser().setSigningKey(APPSERVER_KEY).parseClaimsJws(token).getBody();
-            return claims;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static Claims checkJwt(String token) {
+        return Jwts.parser().setSigningKey(APPSERVER_KEY).parseClaimsJws(token).getBody();
     }
+
 
     /**
      * 从Token中获取用户名
+     * @param token token字符串
+     * @return 用户名
      */
     public static String getUsername(String token) {
         Claims claims = Jwts.parser().setSigningKey(APPSERVER_KEY).parseClaimsJws(token).getBody();
@@ -67,6 +66,8 @@ public class JwtTokenUtil {
 
     /**
      * 从Token中获取用户角色
+     * @param token token字符串
+     * @return 用户的角色
      */
     public static String getUserRole(String token) {
         Claims claims = Jwts.parser().setSigningKey(APPSERVER_KEY).parseClaimsJws(token).getBody();
@@ -75,6 +76,8 @@ public class JwtTokenUtil {
 
     /**
      * 校验Token是否过期
+     * @param token token字符串
+     * @return 结果
      */
     public static boolean isExpiration(String token) {
         Claims claims = Jwts.parser().setSigningKey(APPSERVER_KEY).parseClaimsJws(token).getBody();

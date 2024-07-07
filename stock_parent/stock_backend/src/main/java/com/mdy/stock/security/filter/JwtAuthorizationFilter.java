@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
         // 2.解析tokenStr,获取用户详情信息
-        Claims claims = JwtTokenUtil.checkJWT(tokenStr);
+        Claims claims = JwtTokenUtil.checkJwt(tokenStr);
         // token字符串失效的情况
         if (claims == null) {
             // claims为null表示票据失效

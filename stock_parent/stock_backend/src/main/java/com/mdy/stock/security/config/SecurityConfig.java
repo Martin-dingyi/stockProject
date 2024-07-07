@@ -44,7 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 配置过滤规则
-     *
      * @param http
      * @throws Exception
      */
@@ -75,7 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 自定义认证过滤器bean
-     *
      * @return JwtLoginAuthenticationFilter
      * @throws Exception
      */
