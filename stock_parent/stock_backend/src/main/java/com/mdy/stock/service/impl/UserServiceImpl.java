@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public SysUser getInfoByUsername(String name) {
+    public SysUser findUserByName(String name) {
         return sysUserMapper.findUserByUserName(name);
     }
 
@@ -104,33 +104,33 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 登录功能
-     * @param reqLoginVo 请求信息包含用户名、密码和验证码
+     * @param reqLoginVO 请求信息包含用户名、密码和验证码
      * @return 登录成功或失败信息
      */
     @Override
-    public R<RespLoginVo> login(ReqLoginVO reqLoginVo) {
-        if (reqLoginVo == null || StringUtils.isBlank(reqLoginVo.getUsername())
-                || StringUtils.isBlank(reqLoginVo.getPassword())
-                || StringUtils.isBlank(reqLoginVo.getCode())
-                || StringUtils.isBlank(reqLoginVo.getSessionId())) {
+    public R<RespLoginVo> login(ReqLoginVO reqLoginVO) {
+        if (reqLoginVO == null || StringUtils.isBlank(reqLoginVO.getUsername())
+                || StringUtils.isBlank(reqLoginVO.getPassword())
+                || StringUtils.isBlank(reqLoginVO.getCode())
+                || StringUtils.isBlank(reqLoginVO.getSessionId())) {
             return R.error(ResponseCode.DATA_ERROR);
         }
 
         RespLoginVo respLoginVo = new RespLoginVo();
         // 获取redis中存储的对应验证码，如果不存在或不一致则返回错误信息
-        String redisCode = redisTemplate.opsForValue().get(reqLoginVo.getSessionId());
-        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(reqLoginVo.getCode())) {
+        String redisCode = redisTemplate.opsForValue().get(reqLoginVO.getSessionId());
+        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(reqLoginVO.getCode())) {
             return R.error(ResponseCode.CHECK_CODE_ERROR);
         }
 
         // 通过用户名查找用户信息，如果用户不存在则返回错误信息。
-        SysUser sysUser = sysUserMapper.findUserByUserName(reqLoginVo.getUsername());
+        SysUser sysUser = sysUserMapper.findUserByUserName(reqLoginVO.getUsername());
         if (sysUser == null) {
             return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
         }
 
         // 将输入的密码和数据库中的用户信息中的加密密码比对，如果不一致则报错。
-        if (!passwordEncoder.matches(reqLoginVo.getPassword(), sysUser.getPassword())) {
+        if (!passwordEncoder.matches(reqLoginVO.getPassword(), sysUser.getPassword())) {
             return R.error(ResponseCode.USERNAME_OR_PASSWORD_ERROR);
         }
 

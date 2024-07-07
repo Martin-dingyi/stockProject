@@ -11,6 +11,8 @@ import com.mdy.stock.viewObject.request.ReqLoginVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
 import com.mdy.stock.viewObject.response.RespLoginVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +30,11 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController {
 
-    @Resource
+    @Autowired
     private UserServiceImpl userService;
 
-    @Resource
-    PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 单例测试
@@ -42,7 +44,7 @@ public class UserController {
     @GetMapping("/user/{username}")
     private SysUser getUserByName(@PathVariable("username") String name) {
         System.out.println(passwordEncoder.encode(name));
-        return userService.getInfoByUsername(name);
+        return userService.findUserByName(name);
     }
 
     /**
@@ -50,10 +52,10 @@ public class UserController {
      * @param reqLoginVo 封装的请求对象
      * @return 登录信息
      */
-    @PostMapping("/login")
-    private R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
-        return userService.login(reqLoginVo);
-    }
+//    @PostMapping("/login")
+//    private R<RespLoginVo> login(@RequestBody ReqLoginVO reqLoginVo) {
+//        return userService.login(reqLoginVo);
+//    }
 
     /**
      * 生成验证码
@@ -79,6 +81,7 @@ public class UserController {
      * @param user 接受用户数据
      * @return 操作成功与否信息
      */
+    @PreAuthorize("hasAnyAuthority('sys:user:add')")
     @PostMapping("/user")
     private R<String> insertUsers(@RequestBody SysUser user) {
         if (userService.insertUser(user)) {
@@ -92,6 +95,7 @@ public class UserController {
      * @param ids 存储待删除用户的id
      * @return 返回执行结果
      */
+    @PreAuthorize("hasAnyAuthority('sys:user:delete')")
     @DeleteMapping("/user")
     private R<String> deleteUsers(@RequestBody List<Long> ids) {
         if (userService.deleteByIds(ids)) {
@@ -116,6 +120,7 @@ public class UserController {
      * @param user 接受要更新的用户数据
      * @return 执行结果
      */
+    @PreAuthorize("hasAnyAuthority('sys:user:update')")
     @PutMapping("/user")
     private R<String> updateUsers(@RequestBody SysUser user) {
         // Todo: 太简单，不用做过多练习

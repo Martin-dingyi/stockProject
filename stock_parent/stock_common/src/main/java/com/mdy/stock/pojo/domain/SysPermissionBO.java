@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SysPermissionBO {
+public class SysPermissionBO implements Serializable {
     /**
      * 权限id
      * 将Long类型数字进行json格式转化时，转成String格式类型
@@ -57,6 +58,11 @@ public class SysPermissionBO {
      * 权限的父权限id
      */
     private Long parentId;
+
+    /**
+     * 权限名
+     */
+    private String perms;
 
     /**
      * 子权限目录

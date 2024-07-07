@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class UserAdvice {
 
-    @Pointcut("execution(* com.mdy.stock.service.impl.UserServiceImpl.getInfoByUsername(..))")
+    @Pointcut("execution(* com.mdy.stock.service.impl.UserServiceImpl.findUserByName(..))")
     private void pt(){}
 
     @After("pt()")

@@ -4,6 +4,7 @@ import com.mdy.stock.pojo.domain.*;
 import com.mdy.stock.service.StockService;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

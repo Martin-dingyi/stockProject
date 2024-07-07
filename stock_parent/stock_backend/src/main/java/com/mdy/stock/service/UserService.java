@@ -26,7 +26,7 @@ public interface UserService {
      * @param name 用户名
      * @return
      */
-    SysUser getInfoByUsername(String name);
+    SysUser findUserByName(String name);
 
     /**
      * 根据用户名、密码和验证码验证登录信息
