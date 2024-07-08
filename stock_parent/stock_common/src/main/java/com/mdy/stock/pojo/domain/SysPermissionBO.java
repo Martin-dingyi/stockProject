@@ -1,6 +1,7 @@
 package com.mdy.stock.pojo.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class SysPermissionBO implements Serializable {
     /**
      * 按钮名称
      */
+    @JsonIgnore
     private String buttonName;
 
     /**
@@ -52,16 +54,19 @@ public class SysPermissionBO implements Serializable {
     /**
      * 权限层级
      */
+    @JsonIgnore
     private Integer type;
 
     /**
      * 权限的父权限id
      */
+    @JsonIgnore
     private Long parentId;
 
     /**
      * 权限名
      */
+    @JsonIgnore
     private String perms;
 
     /**

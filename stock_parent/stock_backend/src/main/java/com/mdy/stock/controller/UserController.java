@@ -1,7 +1,11 @@
 package com.mdy.stock.controller;
 
+import com.mdy.stock.pojo.domain.RoleBO;
+import com.mdy.stock.pojo.domain.UpdateRoleBO;
+import com.mdy.stock.pojo.entity.SysRole;
 import com.mdy.stock.pojo.entity.SysUser;
 import com.mdy.stock.service.impl.UserServiceImpl;
+import com.mdy.stock.viewObject.request.ReqListRoleVO;
 import com.mdy.stock.viewObject.request.ReqListUserVO;
 import com.mdy.stock.viewObject.response.PageResult;
 import com.mdy.stock.viewObject.response.R;
@@ -99,5 +103,40 @@ public class UserController {
     public R<String> updateUsers(@RequestBody SysUser user) {
         // 太简单，不用做过多练习
         return null;
+    }
+
+    /**
+     * 根据用户id获取关于他的所有角色的信息
+     * @param userId 用户id
+     * @return R
+     */
+    @PreAuthorize("hasAnyAuthority('sys:role:list')")
+    @GetMapping("/user/roles/{userId}")
+    public R<RoleBO> getUserRoles(@PathVariable("userId") Long userId) {
+        return userService.getRolesById(userId);
+    }
+
+    /**
+     * 根据分页信息查询用户角色信息
+     * @return R
+     */
+    @PreAuthorize("hasAnyAuthority('sys:role:list')")
+    @PostMapping("/roles")
+    public R<PageResult<SysRole>>  listSysRoles(@RequestBody ReqListRoleVO reqListRoleVO) {
+        return userService.listSysRoles(reqListRoleVO);
+    }
+
+    /**
+     * 根据id修改它的角色信息
+     * @param updateRoleBO 保持角色id和要改变的角色ids
+     * @return 操作结果
+     */
+    @PreAuthorize("hasAnyAuthority('sys:role:update')")
+    @PutMapping("/user/roles")
+    public R<String> updateUserRoles(@RequestBody UpdateRoleBO updateRoleBO) {
+        if (userService.updateRolesById(updateRoleBO)) {
+            return R.ok("操作成功");
+        }
+        return R.error("操纵失败");
     }
 }

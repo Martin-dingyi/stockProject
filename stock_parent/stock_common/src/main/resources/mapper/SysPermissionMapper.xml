@@ -46,6 +46,7 @@
       sp.url as path,
       sp.name,
       sp.type,
+      sp.perms,
       sp.pid as parentId
     from
       sys_permission sp
