@@ -42,19 +42,19 @@ public class RedisCacheConfig {
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 建立序列化器
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        Jackson2JsonRedisSerializer<Object> jsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
 
-        // 设置ObjectMapper
+        // 设置ObjectMapper，用于配置JSON序列化的行为，比如属性的可见性、类型信息的保存等。
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         // 仅仅序列化对象的属性，且属性不可为final修饰
         objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        jsonRedisSerializer.setObjectMapper(objectMapper);
 
-        serializer.setObjectMapper(objectMapper);
         // 配置key和value序列化
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jsonRedisSerializer))
                 // 关闭控制存储
                 .disableCachingNullValues()
                 // 修改前缀与key的间隔符号，默认是::
@@ -78,7 +78,7 @@ public class RedisCacheConfig {
     /**
      * 设置RedisConfiguration配置
      * @param config redis的config配置
-     * @param ttl    缓存存活时间
+     * @param ttl 缓存存活时间
      * @return 设置好的RedisCacheConfiguration
      */
     public RedisCacheConfiguration customRedisCacheConfiguration(RedisCacheConfiguration config, Duration ttl) {
