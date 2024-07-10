@@ -144,8 +144,7 @@ public class DateTimeUtil {
      * @return
      */
     public static DateTime getDateTimeWithoutSecond(DateTime dateTime) {
-        DateTime newDate = dateTime.withSecondOfMinute(0).withMillisOfSecond(0);
-        return newDate;
+        return dateTime.withSecondOfMinute(0).withMillisOfSecond(0);
     }
 
 

@@ -32,7 +32,7 @@ public interface UserService {
      * 获取验证码
      * @return
      */
-    R<Map> getCaptchaCode();
+    R<Map<String, String>> getCaptchaCode();
 
     /**
      * 根据分页参数查询用户数据

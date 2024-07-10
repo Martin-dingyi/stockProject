@@ -19,8 +19,8 @@ public class JwtTokenUtil {
     public static final String SUBJECT = "JRZS";
     // 过期时间，单位ms。默认为7天
     public static final long EXPIRATION = 1000 * 60 * 60 * 24 * 7;
-    // 应用密钥，默认为abcdrfg。注意不得低于4位
-    public static final String APPSERVER_KEY = "abcdrfg";
+    // 应用密钥，默认为alibaba。注意不得低于4位
+    public static final String APPSERVER_KEY = "alibaba";
     // 角色权限声明
     private static final String ROLE_CLAIMS = "role";
 

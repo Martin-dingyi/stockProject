@@ -30,15 +30,12 @@ public class UserController {
     @Resource
     private UserServiceImpl userService;
 
-    @Resource
-    private PasswordEncoder passwordEncoder;
-
     /**
      * 生成验证码
      * @return 验证码
      */
     @GetMapping("/captcha")
-    public R<Map> getCaptchaCode() {
+    public R<Map<String, String>> getCaptchaCode() {
         return userService.getCaptchaCode();
     }
 

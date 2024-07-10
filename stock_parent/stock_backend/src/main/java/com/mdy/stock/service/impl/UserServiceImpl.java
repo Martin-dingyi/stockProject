@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mdy.stock.face.impl.UserCacheFaceImpl;
 import com.mdy.stock.mapper.SysPermissionMapper;
 import com.mdy.stock.mapper.SysRoleMapper;
 import com.mdy.stock.mapper.SysUserMapper;
@@ -57,6 +58,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
+    @Resource
+    private UserCacheFaceImpl userCacheFace;
+
     @Override
     public SysUser findUserByName(String name) {
         return sysUserMapper.findUserByUserName(name);
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
      * @return 返回图片的base64格式数据和sessionId
      */
     @Override
-    public R<Map> getCaptchaCode() {
+    public R<Map<String, String>> getCaptchaCode() {
         // 1.生成图形
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(250, 40, 4, 5);
         // 2.生成四位验证码
@@ -85,7 +89,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 根据分页参数查询用户数据
-     *
      * @param reqListUserVO 前端传来的json数据
      * @return PageResult
      */
@@ -120,11 +123,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public R<PageResult<SysRole>> listSysRoles(ReqListRoleVO reqListRoleVO) {
+
+        List<SysRole> sysRoles = userCacheFace.listRolesToCache();
+
         PageHelper.startPage(reqListRoleVO.getPageNum(), reqListRoleVO.getPageSize());
-
-        List<SysRole> sysRoles = sysRoleMapper.findAll();
         PageInfo<SysRole> pageInfo = new PageInfo<>(sysRoles);
-
         return R.ok(new PageResult<>(pageInfo));
     }
 
